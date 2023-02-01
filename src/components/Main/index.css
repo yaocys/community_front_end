@@ -1,0 +1,14 @@
+#main{
+    border: yellow solid 1px;
+    margin: 1em auto;
+    padding: 0;
+}
+
+#post-list{
+    border: #0a58ca solid 1px;
+}
+
+#side-bar{
+    height: 900px;
+    border: red solid 1px
+}
