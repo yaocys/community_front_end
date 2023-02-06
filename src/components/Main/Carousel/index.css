@@ -1,4 +1,8 @@
-#carouselIndicators>img{
+#carouselIndicators > img {
     width: 100%;
     height: auto;
+}
+
+#carouselIndicators {
+    margin: 1em auto;
 }
