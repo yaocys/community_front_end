@@ -1,0 +1,19 @@
+#username {
+
+}
+
+#icons > a > i {
+    margin-left: 2em;
+}
+
+#icons > a {
+    color: #575a5e;
+}
+
+#icons > a:hover {
+    color: #0a58ca;
+}
+
+#myTabContent {
+    min-height: 700px;
+}

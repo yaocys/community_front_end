@@ -1,0 +1,20 @@
+#footer {
+    padding: 1em;
+}
+
+#qrcode {
+    margin: auto;
+}
+
+footer .qrcode {
+    text-align: center;
+}
+
+footer .detail-info {
+    border-left: 1px solid #888;
+}
+
+footer .company-info li {
+    padding-left: 16px;
+    margin: 4px 0;
+}

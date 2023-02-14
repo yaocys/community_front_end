@@ -9,6 +9,7 @@
 
 #side-bar {
     height: 600px;
+    min-width: 240px;
 }
 
 #nav-tag {

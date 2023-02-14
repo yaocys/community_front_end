@@ -7,14 +7,28 @@ function SideBar() {
 
             <div className="card" style={{marginTop: "1em"}}>
                 <div className="card-body">
-                    <img src="http://images.nowcoder.com/head/1t.png"
-                         className="mr-4 rounded-circle user-header" alt="用户头像" height="40rem" width="40rem"/>
-                    <span className="card-title">   捞捞张同学吧</span>
+                    <div style={{marginBottom: "0.5em"}} className="d-flex align-items-center card-title">
+                        <a href="" style={{marginRight: "0.5em"}}>
+                            <img src="http://images.nowcoder.com/head/1t.png"
+                                 className="mr-4 rounded-circle user-header" alt="用户头像" height="40px"/>
+                        </a>
+                        <div className="d-inline-block align-items-center">
+                            <div>
+                                <a href="">
+                                    <span id="username" style={{marginRight: "0.5em"}}
+                                          className="text-muted d-block">捞捞张同学吧</span>
+                                    <small className="badge rounded-pill bg-success-subtle fw-medium"
+                                           style={{fontSize: "x-small"}}>
+                                        <i className="bi bi-1-circle"></i> 初出茅庐
+                                    </small>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
                     <p className="card-text">这里展示一些用户信息，比如用户的等级和经验，用户的帖子数量、粉丝数量等</p>
-                </div>
-                <div className="card-body">
                     <a href="#" className="card-link">签到</a>
                     <a href="#" className="card-link">个人主页</a>
+                    <a href="#" className="card-link">我的收藏</a>
                 </div>
             </div>
 
