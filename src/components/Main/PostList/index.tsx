@@ -7,21 +7,42 @@ import PostItem from "./PostItem";
 function PostList() {
 
     const [postList, setPostList] = useState<any[]>([]);
+    const [navigatePages, setNavigatePages] = useState<any[]>([]);
+    const [totalLine, setTotalLine] = useState<any>(0);
+    const [currentPage, setCurrentPage] = useState<number>(1);
+    const [hasPreviousPage, setHasPreviousPage] = useState<boolean>(false);
+    const [hasNextPage, setHasNextPage] = useState<boolean>(true);
+    const [prePage, setPrePage] = useState<number>(1);
+    const [nextPage, setNextPage] = useState<number>(1);
+    const [pages, setPages] = useState<number>(1);
 
-    useEffect(() => {
+    const sendRequest = (offset: number) => {
         axios.get('http://localhost:8079/community/apiIndex', {
             params: {
-                offset: 1,
+                offset: offset,
                 limit: 10
             }
         }).then(
             response => {
-                setPostList(response.data.data);
+                setPostList(response.data.data.list);
+                setTotalLine(response.data.data.total);
+                setCurrentPage(response.data.data.pageNum);
+                setNavigatePages(response.data.data.navigatepageNums);
+                setHasPreviousPage(response.data.data.hasPreviousPage);
+                setHasNextPage(response.data.data.hasNextPage);
+                setPrePage(response.data.data.prePage);
+                setNextPage(response.data.data.nextPage);
+                setPages(response.data.data.pages);
             },
             error => {
                 console.log('请求失败', error);
             }
         )
+        window.scrollTo(0, 0);
+    }
+
+    useEffect(() => {
+        sendRequest(1);
     }, []);
 
     return (
@@ -67,7 +88,7 @@ function PostList() {
                             {
                                 postList && postList.map((post: any) => {
                                     return (
-                                        <PostItem key={post.post.id} post={post.post}/>
+                                        <PostItem key={post.id} post={post}/>
                                     )
                                 })
                             }
@@ -122,7 +143,25 @@ function PostList() {
                 </div>
             </div>
 
-            <Pagination/>
+            <Pagination sendRequest={sendRequest}
+                        currentPage={currentPage}
+                        setCurrentPage={setCurrentPage}
+                        totalLine={totalLine}
+                        navigatePages={navigatePages}
+                        setNavigatePages={setNavigatePages}
+                        hasPreviousPage={hasPreviousPage}
+                        hasNextPage={hasNextPage}
+                        prePage={prePage}
+                        nextPage={nextPage}
+                        setPostList={setPostList}
+                        setHasPreviousPage={setHasPreviousPage}
+                        setHasNextPage={setHasNextPage}
+                        setTotalLine={setTotalLine}
+                        setPrePage={setPrePage}
+                        setNextPage={setNextPage}
+                        setPages={setPages}
+                        pages={pages}
+            />
         </div>
     )
 }
