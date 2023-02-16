@@ -17,3 +17,10 @@
 #myTabContent {
     min-height: 700px;
 }
+
+#publishButton {
+    background-color: #00b894;
+    border: 0;
+    --bs-btn-padding-y: .32rem;
+    --bs-btn-padding-x: .5rem;
+}

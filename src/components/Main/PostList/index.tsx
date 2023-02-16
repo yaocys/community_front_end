@@ -3,6 +3,7 @@ import axios from "axios";
 import './index.css'
 import Pagination from "../Pagination";
 import PostItem from "./PostItem";
+import Publish from "../Publish";
 
 function PostList() {
 
@@ -46,10 +47,10 @@ function PostList() {
     }, []);
 
     return (
-        <div className="container col-9" id="post-list">
+        <div className="container col-9 position-relative" id="post-list">
             {/*页签*/}
             <nav className="position-relative" id="nav-tag">
-                <ul className="nav nav-tabs mb-3" id="myTab" role="tablist">
+                <ul className="nav nav-tabs mb-3 d-flex" id="myTab" role="tablist">
                     <li className="nav-item" role="presentation">
                         <button className="nav-link" id="focus-tab" data-bs-toggle="tab"
                                 data-bs-target="#focus-tab-pane"
@@ -68,10 +69,17 @@ function PostList() {
                                 aria-controls="latest-tab-pane" aria-selected="false">最新
                         </button>
                     </li>
+                    <li style={{marginLeft: "auto"}}>
+                        <button type="button" className="btn btn-success"
+                                data-bs-toggle="modal" data-bs-target="#exampleModal"
+                                data-bs-whatever="@mdo" id="publishButton">
+                            <i className="bi bi-pencil-square"></i>&nbsp;发布
+                        </button>
+                    </li>
                 </ul>
-                {/*                <button type="button" className="btn btn-primary btn-sm position-absolute rt-0" data-toggle="modal"
-                        data-target="#publishModal">我要发布
-                </button>*/}
+
+                <Publish/>
+
                 <div className="tab-content" id="myTabContent">
                     <div className="tab-pane fade" id="focus-tab-pane" role="tabpanel"
                          aria-labelledby="focus-tab" tabIndex={0}>
@@ -97,37 +105,6 @@ function PostList() {
                 </div>
             </nav>
 
-            {/*发帖模态框*/}
-            <div className="modal fade" id="publishModal" tabIndex={-1} role="dialog"
-                 aria-labelledby="publishModalLabel" aria-hidden="true">
-                <div className="modal-dialog modal-lg" role="document">
-                    <div className="modal-content">
-                        <div className="modal-header">
-                            <h5 className="modal-title" id="publishModalLabel">新帖发布</h5>
-                            <button type="button" className="close" data-dismiss="modal" aria-label="Close">
-                                <span aria-hidden="true">&times;</span>
-                            </button>
-                        </div>
-                        <div className="modal-body">
-                            <form>
-                                <div className="form-group">
-                                    <label htmlFor="recipient-name" className="col-form-label">标题：</label>
-                                    <input type="text" className="form-control" id="recipient-name"/>
-                                </div>
-                                <div className="form-group">
-                                    <label htmlFor="message-text" className="col-form-label">正文：</label>
-                                    <textarea className="form-control" id="message-text" rows={15}></textarea>
-                                </div>
-                            </form>
-                        </div>
-                        <div className="modal-footer">
-                            <button type="button" className="btn btn-secondary" data-dismiss="modal">取消</button>
-                            <button type="button" className="btn btn-primary" id="publishBtn">发布</button>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
             {/*页面提示 模态框*/}
             <div className="modal fade" id="hintModal" tabIndex={-1} role="dialog" aria-labelledby="hintModalLabel"
                  aria-hidden="true">
@@ -145,21 +122,12 @@ function PostList() {
 
             <Pagination sendRequest={sendRequest}
                         currentPage={currentPage}
-                        setCurrentPage={setCurrentPage}
                         totalLine={totalLine}
                         navigatePages={navigatePages}
-                        setNavigatePages={setNavigatePages}
                         hasPreviousPage={hasPreviousPage}
                         hasNextPage={hasNextPage}
                         prePage={prePage}
                         nextPage={nextPage}
-                        setPostList={setPostList}
-                        setHasPreviousPage={setHasPreviousPage}
-                        setHasNextPage={setHasNextPage}
-                        setTotalLine={setTotalLine}
-                        setPrePage={setPrePage}
-                        setNextPage={setNextPage}
-                        setPages={setPages}
                         pages={pages}
             />
         </div>

@@ -1,26 +1,13 @@
-import React, {useEffect} from "react";
-import axios from "axios";
+import React from "react";
 
 /**
  * 分页组件
  */
 function Pagination(props: any) {
     const {
-        currentPage, setCurrentPage, totalLine
-        , navigatePages, setNavigatePages,
-        hasPreviousPage, hasNextPage,
-        prePage, nextPage, setPostList,
-        setHasPreviousPage, setHasNextPage,
-        setTotalLine, setPrePage, setNextPage,
-        pages, setPages, sendRequest
+        currentPage, totalLine, navigatePages, hasPreviousPage,
+        hasNextPage, prePage, nextPage, pages, sendRequest
     } = props;
-
-
-    /**
-     * 这里页面跳转怎么做？
-     * 1. 点击按钮，组件重新发送请求，刷新组件状态数据
-     * 2. 点击按钮，刷新链接
-     */
 
     return (
         <nav className={`mt-5 user-select-none ${totalLine > 0 ? '' : 'd-none'}`}>
@@ -49,15 +36,14 @@ function Pagination(props: any) {
                     })
                 }
 
-
                 <li className={`page-item ${currentPage === pages ? 'd-none' : ''}`}>
                     <span className="page-link" onClick={() => sendRequest(pages)}>末页</span>
                 </li>
 
                 <li className={`page-item ${hasNextPage ? '' : 'disabled'}`}>
-                    <a className="page-link" onClick={() => sendRequest(nextPage)}>
+                    <span className="page-link" onClick={() => sendRequest(nextPage)}>
                         <i className="bi bi-caret-right"></i>
-                    </a>
+                    </span>
                 </li>
             </ul>
         </nav>
