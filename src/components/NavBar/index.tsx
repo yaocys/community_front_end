@@ -1,8 +1,24 @@
-import React from "react";
+import React, {useState} from "react";
 import './index.css';
 import Login from "../Main/Modal/Login";
+import axios from "axios";
 
-function NavBar(){
+function NavBar() {
+    const [captcha, setCaptcha] = useState<string>("");
+    const getCaptcha = () => {
+        axios.get('http://localhost:8079/community/captcha', {
+            responseType: "blob"
+        }).then(
+            response => {
+                let blob = new Blob([response.data], {type: response.data.type});
+                setCaptcha(URL.createObjectURL(blob));
+
+            },
+            error => {
+                console.log('请求失败', error);
+            }
+        )
+    }
     return (
         <>
             <nav className="navbar navbar-expand-lg navbar-light bg-light sticky-top" id="navbar">
@@ -25,7 +41,7 @@ function NavBar(){
                                 <a className="nav-link active" aria-current="page" href="#">首页</a>
                             </li>
                             <button type="button" className="btn btn-outline-primary border-0" data-bs-toggle="modal"
-                                    data-bs-target="#loginModal" data-bs-whatever="@mdo">登录
+                                    data-bs-target="#loginModal" data-bs-whatever="@mdo" onClick={getCaptcha}>登录
                             </button>
                             <li className="nav-item">
                                 <a className="nav-link" href="#">注册</a>
@@ -66,7 +82,7 @@ function NavBar(){
                 </div>
             </nav>
 
-            <Login/>
+            <Login captcha={captcha} getCaptcha={getCaptcha}/>
         </>
     )
 }

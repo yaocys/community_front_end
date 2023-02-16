@@ -1,7 +1,10 @@
 import React from "react";
 import './index.css';
 
-function Login() {
+function Login(props: any) {
+
+    const {captcha, getCaptcha} = props;
+
     return (
         <div className="modal fade" id="loginModal" tabIndex={-1} aria-labelledby="loginModalLabel"
              aria-hidden="true">
@@ -27,9 +30,9 @@ function Login() {
                                            placeholder="验证码"/>
                                 </div>
                                 <div className="col-sm-5 d-flex">
-                                    <img src="" id="kaptcha"
+                                    <img src={captcha} id="kaptcha"
                                          style={{width: "100px", height: "35px", marginLeft: "auto"}}
-                                         className=""/>
+                                         onClick={getCaptcha}/>
                                 </div>
                             </div>
                         </form>
