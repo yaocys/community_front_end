@@ -3,7 +3,7 @@ import axios from "axios";
 import './index.css'
 import Pagination from "../Pagination";
 import PostItem from "./PostItem";
-import Publish from "../Publish";
+import Publish from "../Modal/Publish";
 
 function PostList() {
 
@@ -71,7 +71,7 @@ function PostList() {
                     </li>
                     <li style={{marginLeft: "auto"}}>
                         <button type="button" className="btn btn-success"
-                                data-bs-toggle="modal" data-bs-target="#exampleModal"
+                                data-bs-toggle="modal" data-bs-target="#publishModal"
                                 data-bs-whatever="@mdo" id="publishButton">
                             <i className="bi bi-pencil-square"></i>&nbsp;发布
                         </button>
