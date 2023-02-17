@@ -2,17 +2,20 @@ import React, {useState} from "react";
 import './index.css';
 import Login from "../Main/Modal/Login";
 import axios from "axios";
+import {useCookies} from "react-cookie";
 
 function NavBar() {
     const [captcha, setCaptcha] = useState<string>("");
+
     const getCaptcha = () => {
         axios.get('http://localhost:8079/community/captcha', {
-            responseType: "blob"
+            responseType: "blob",
+            withCredentials: true
         }).then(
             response => {
                 let blob = new Blob([response.data], {type: response.data.type});
                 setCaptcha(URL.createObjectURL(blob));
-
+                console.log(response.headers["set-cookie"])
             },
             error => {
                 console.log('请求失败', error);

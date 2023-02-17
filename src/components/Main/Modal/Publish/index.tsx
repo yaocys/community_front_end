@@ -19,14 +19,14 @@ function Publish() {
     }
 
     const handleSubmit = () => {
-        console.log('提交表单' + title + content)
         axios.post('http://localhost:8079/community/post/add', {
             title: title,
             content: content
         }, {
             headers: {
                 "Content-Type": 'application/x-www-form-urlencoded'
-            }
+            },
+            withCredentials: true
         }).then(
             response => {
                 console.log(response.data);
