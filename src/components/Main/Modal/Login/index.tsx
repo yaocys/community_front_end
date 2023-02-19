@@ -1,10 +1,15 @@
 import React, {useState} from "react";
 import './index.css';
 import axios from "axios";
+import {Button, Modal} from "react-bootstrap";
 
+/**
+ * 登录模态框组件
+ */
 function Login(props: any) {
 
-    const {captcha, getCaptcha} = props;
+    const {captcha, getCaptcha, loginShow, loginClose, switchToRegister} = props;
+
     const [username, setUsername] = useState<string>("");
     const [password, setPassword] = useState<string>("");
     const [code, setCode] = useState<string>("");
@@ -49,65 +54,60 @@ function Login(props: any) {
     }
 
     return (
-        <div className="modal fade" id="loginModal" tabIndex={-1} aria-labelledby="loginModalLabel"
-             aria-hidden="true">
-            <div className="modal-dialog">
-                <div className="modal-content">
-                    <div className="modal-header">
-                        <img src="/icon/nav.png" alt="Band" width={88} height={30}
-                             className="d-inline-block align-top m-auto"/>
+        <Modal show={loginShow} onHide={loginClose} id="loginModal">
+            <Modal.Header closeButton>
+                <img src="/icon/nav.png" alt="Band" width={88} height={30}
+                     className="d-inline-block m-auto"/>
+            </Modal.Header>
+            <Modal.Body>
+                <form>
+                    <div className="mb-3">
+                        <input type="text" className="form-control" name="username" id="username"
+                               placeholder="账号" onChange={saveFormData('username')}/>
                     </div>
-                    <div className="modal-body">
-                        <form>
-                            <div className="mb-3">
-                                <input type="text" className="form-control" name="username" id="username"
-                                       placeholder="账号" onChange={saveFormData('username')}/>
-                            </div>
-                            <div className="mb-3">
-                                <input type="password" className="form-control" name="password" id="password"
-                                       placeholder="密码" onChange={saveFormData('password')}/>
-                            </div>
-                            <div className="row mb-3">
-                                <div className="col-sm-7">
-                                    <input type="text" className="form-control" name="captcha" id="captcha"
-                                           placeholder="验证码" onChange={saveFormData('code')}/>
-                                </div>
-                                <div className="col-sm-5 d-flex">
-                                    <img src={captcha} onClick={getCaptcha} alt="点击刷新验证码"
-                                         style={{width: "100px", height: "35px", marginLeft: "auto"}}/>
-                                </div>
-                            </div>
-                        </form>
-
-                        <div className="d-flex justify-content-between row">
-                            <div className="col-4 align-items-center d-flex">
-                                <div className="form-check">
-                                    <input type="checkbox" className="form-check-input" id="rememberMe"
-                                           onChange={() => setRememberMe(!rememberMe)}/>
-                                    <label className="form-check-label" htmlFor="dropdownCheck">
-                                        记住我
-                                    </label>
-                                </div>
-                            </div>
-                            <div className="col-4 text-center">
-                                <a href="" className="float-right">去注册</a>
-                            </div>
-                            <div className="col-4 text-end">
-                                <a href="forget.html" className="text-muted">忘记密码?</a>
-                            </div>
+                    <div className="mb-3">
+                        <input type="password" className="form-control" name="password" id="password"
+                               placeholder="密码" onChange={saveFormData('password')}/>
+                    </div>
+                    <div className="row mb-3">
+                        <div className="col-sm-7">
+                            <input type="text" className="form-control" name="captcha" id="captcha"
+                                   placeholder="验证码" onChange={saveFormData('code')}/>
+                        </div>
+                        <div className="col-sm-5 d-flex">
+                            <img src={captcha} onClick={getCaptcha} alt="点击刷新"
+                                 style={{width: "100px", height: "35px", marginLeft: "auto"}}/>
                         </div>
                     </div>
-
-                    <div className="modal-footer">
-                        <button type="button" className="btn btn-primary m-auto w-100" onClick={handleSubmit}>登录
-                        </button>
+                </form>
+                <div className="d-flex justify-content-between row">
+                    <div className="col-4 align-items-center d-flex">
+                        <input type="checkbox" id="rememberMe" name="rememberMe"
+                               onChange={() => setRememberMe(!rememberMe)}/>
+                        <label className="form-check-label text-muted" htmlFor="rememberMe">&nbsp;记住我</label>
                     </div>
-                    <p style={{fontSize: 1}} className="text-muted text-center">
-                        登录即同意<a href="">《用户协议》</a>和<a href="">《隐私协议》</a>
-                    </p>
+                    <div className="col-4 text-center">
+                        <Button onClick={switchToRegister} className="text-decoration-none" variant="link">
+                            去注册
+                        </Button>
+                    </div>
+                    <div className="col-4 text-center" style={{paddingRight: 0}}>
+                        <Button onClick={switchToRegister} className="text-decoration-none text-muted" variant="link"
+                                style={{paddingRight: 0}}>
+                            忘记密码
+                        </Button>
+                    </div>
                 </div>
-            </div>
-        </div>
+            </Modal.Body>
+            <Modal.Footer>
+                <Button className="m-auto w-100" onClick={handleSubmit}>
+                    注册
+                </Button>
+            </Modal.Footer>
+            <p style={{fontSize: 1}} className="text-muted text-center">
+                登录即同意<a href="">《用户协议》</a>和<a href="">《隐私协议》</a>
+            </p>
+        </Modal>
     )
 }
 

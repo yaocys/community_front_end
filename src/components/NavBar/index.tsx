@@ -3,9 +3,12 @@ import './index.css';
 import axios from "axios";
 import {Button} from "react-bootstrap";
 
+/**
+ * 顶部导航栏组件
+ */
 function NavBar(props: any) {
 
-    const {ticket, getCaptcha, removeTicket, registerOpen} = props;
+    const {registerOpen, loginOpen} = props;
 
     return (
         <nav className="navbar navbar-expand-lg bg-light sticky-top bg-body-tertiary" id="navbar">
@@ -27,38 +30,14 @@ function NavBar(props: any) {
                         <li className="nav-item">
                             <a className="nav-link active" aria-current="page" href="#">首页</a>
                         </li>
-                        <button type="button" data-bs-toggle="modal" data-bs-target="#loginModal"
-                                data-bs-whatever="@mdo"
-                                className={`btn btn-outline-primary border-0 `}
-                                onClick={getCaptcha}>登录
-                        </button>
 
-                        <Button onClick={registerOpen} className="border-0 text-decoration-none" variant="link">
+                        <Button onClick={loginOpen} className="text-decoration-none" variant="link">
+                            登录
+                        </Button>
+                        <Button onClick={registerOpen} className="text-decoration-none" variant="link">
                             注册
                         </Button>
 
-                        {/*<button type="button" className={`btn btn-outline-primary border-0`}
-                                onClick={() => {
-                                    axios.post('http://localhost:8079/community/like', {
-                                        entityType: 123123,
-                                        entityId: 14213,
-                                        entityAuthorId: 43242,
-                                        postId: 214123
-                                    }, {
-                                        withCredentials: true,
-                                        headers: {
-                                            'X-Requested-With': 'XMLHttpRequest'
-                                        }
-                                    }).then(
-                                        response => {
-                                            console.log(response.data);
-                                        },
-                                        error => {
-                                            console.log('请求失败', error);
-                                        }
-                                    )
-                                }}>点击发送
-                        </button>*/}
                         <li className="nav-item">
                             <a className="nav-link" href="#">消息</a>
                         </li>

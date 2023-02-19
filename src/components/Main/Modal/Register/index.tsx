@@ -3,10 +3,12 @@ import {Button, Modal, ModalTitle} from "react-bootstrap";
 import './index.css';
 import axios from "axios";
 
-
+/**
+ * 注册模态框组件
+ */
 function Register(props: any) {
 
-    const {registerShow, registerClose} = props;
+    const {registerShow, registerClose, switchToLogin} = props;
 
     const [username, setUsername] = useState<string>("");
     const [password, setPassword] = useState<string>("");
@@ -15,7 +17,7 @@ function Register(props: any) {
 
 
     const handleSubmit = () => {
-        axios.post('http://localhost:8079/community/login', {
+        axios.post('http://localhost:8079/community/register', {
             username: username,
             password: password,
             email: email
@@ -58,7 +60,7 @@ function Register(props: any) {
         <Modal show={registerShow} onHide={registerClose} id="registerModal">
             <Modal.Header closeButton>
                 <ModalTitle>
-                    <Button variant="link" className="text-decoration-none">
+                    <Button variant="link" className="text-decoration-none" onClick={switchToLogin}>
                         返回登录
                     </Button>
                     <img src="/icon/nav.png" alt="Band" width={88} height={30}

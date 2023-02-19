@@ -11,7 +11,12 @@ import Register from "./components/Main/Modal/Register";
 function App() {
     const [ticket, setTicket, removeTicket] = useCookies(['ticket']);
     const [captcha, setCaptcha] = useState<string>("");
+
+    /*
+    控制模态框的显示
+     */
     const [registerShow, setRegisterShow] = useState<boolean>(false);
+    const [loginShow, setLoginShow] = useState<boolean>(false);
 
     const registerClose = () => {
         setRegisterShow(false);
@@ -21,6 +26,29 @@ function App() {
         setRegisterShow(true);
     }
 
+    const loginOpen = () => {
+        setLoginShow(true);
+        getCaptcha();
+    }
+
+    const loginClose = () => {
+        setLoginShow(false);
+    }
+
+    const switchToRegister = () => {
+        setLoginShow(false);
+        setRegisterShow(true);
+    }
+
+    const switchToLogin = () => {
+        setRegisterShow(false);
+        getCaptcha();
+        setLoginShow(true);
+    }
+
+    /**
+     * 获取验证码图片
+     */
     const getCaptcha = () => {
         axios.get('http://localhost:8079/community/captcha', {
             responseType: "blob",
@@ -41,12 +69,14 @@ function App() {
 
     return (
         <>
-            <NavBar ticket={ticket} setCaptcha={setCaptcha}
-                    getCaptcha={getCaptcha} removeTicket={removeTicket}
-                    setTicket={setTicket} registerOpen={registerOpen}/>
+            <NavBar registerOpen={registerOpen} loginOpen={loginOpen}/>
             <Main/>
-            <Login captcha={captcha} getCaptcha={getCaptcha} ticket={ticket}/>
-            <Register registerShow={registerShow} registerClose={registerClose}/>
+            <Login captcha={captcha} getCaptcha={getCaptcha} ticket={ticket}
+                   loginShow={loginShow} loginClose={loginClose}
+                   switchToRegister={switchToRegister}/>
+
+            <Register registerShow={registerShow} registerClose={registerClose}
+                      switchToLogin={switchToLogin}/>
             <Footer/>
         </>
     );

@@ -1,7 +1,3 @@
 #loginModal {
     --bs-modal-width: 350px;
 }
-
-#loginModal > input {
-    width: 50%;
-}
