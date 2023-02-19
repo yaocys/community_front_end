@@ -14,28 +14,26 @@ function PostItem(props: any) {
                         className="bi bi-calendar4-event"></i>&nbsp;&nbsp;{moment(post && post.createTime).format("YYYY-MM-DD HH:MM")}
                     </small>
                 </div>
-                <small className="text-muted" style={{letterSpacing: "1px"}}>
+                <small className="text-muted text-truncate d-block">
                     {post.content}
                 </small>
             </a>
 
-            <div className="d-flex justify-content-between align-items-center text-muted" style={{marginTop: "0.3em"}}>
+            <div className="d-flex justify-content-between align-items-center text-muted" style={{marginTop: "0.5em"}}>
                 <div style={{margin: "auto 0"}} className="d-flex justify-content-center align-items-center">
                     <a href="" style={{marginRight: "0.5em"}}>
                         <img src={post.headerUrl}
                              className="mr-4 rounded-circle user-header" alt="用户头像" height="24px"/>
                     </a>
                     <div className="d-inline-block align-items-center">
-                        <div>
-                            <a href="">
-                                <span id="username" style={{marginRight: "0.5em"}}
-                                      className="text-muted">{post.username}</span>
-                                <small className="badge rounded-pill bg-success-subtle fw-medium"
-                                       style={{fontSize: "x-small"}}>
-                                    <i className="bi bi-1-circle"></i> 初出茅庐
-                                </small>
-                            </a>
-                        </div>
+                        <a href="">
+                            <span id="username" style={{marginRight: "0.5em"}}
+                                  className="text-muted">{post.username}</span>
+                            <small className="badge rounded-pill bg-success-subtle fw-medium"
+                                   style={{fontSize: "x-small"}}>
+                                <i className="bi bi-1-circle"></i> 初出茅庐
+                            </small>
+                        </a>
                     </div>
                 </div>
                 <div>

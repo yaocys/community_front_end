@@ -81,9 +81,13 @@ function Login(props: any) {
 
                         <div className="d-flex justify-content-between row">
                             <div className="col-4 align-items-center d-flex">
-                                <input type="checkbox" id="rememberMe" name="rememberMe"
-                                       onChange={() => setRememberMe(!rememberMe)}/>
-                                <label className="form-check-label text-muted" htmlFor="rememberMe">&nbsp;记住我</label>
+                                <div className="form-check">
+                                    <input type="checkbox" className="form-check-input" id="rememberMe"
+                                           onChange={() => setRememberMe(!rememberMe)}/>
+                                    <label className="form-check-label" htmlFor="dropdownCheck">
+                                        记住我
+                                    </label>
+                                </div>
                             </div>
                             <div className="col-4 text-center">
                                 <a href="" className="float-right">去注册</a>
