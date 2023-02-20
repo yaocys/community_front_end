@@ -1,14 +1,66 @@
 import React from "react";
 import './index.css';
 import axios from "axios";
-import {Button} from "react-bootstrap";
+import {Cookies} from "react-cookie";
+import {Button, Dropdown, Nav, NavDropdown} from "react-bootstrap";
 
 /**
  * 顶部导航栏组件
  */
 function NavBar(props: any) {
 
-    const {registerOpen, loginOpen} = props;
+    const {registerOpen, loginOpen, ticket, setTicket} = props;
+    const cookie = new Cookies;
+    const logout = () => {
+        setTicket(undefined);
+        cookie.remove('ticket');
+        // 向后端发送请求
+    }
+
+    const ifLoginShow = () => {
+        if (ticket === undefined) {
+            // 用户未登录
+            return (
+                <>
+                    <Button onClick={loginOpen} variant="link"
+                            className="text-decoration-none">
+                        登录
+                    </Button>
+                    <Button onClick={registerOpen} variant="link"
+                            className="text-decoration-none">
+                        注册
+                    </Button>
+                </>
+            )
+        } else {
+            // 登录了
+            return (
+                <>
+                    <li className="nav-item">
+                        <a className="nav-link" href="#">消息</a>
+                    </li>
+
+                    <Nav>
+                        <NavDropdown id="personal-center" title="个人中心">
+                            <Dropdown.Header className="user-select-none">
+                                用户名
+                            </Dropdown.Header>
+                            <NavDropdown.Item href="#action/3.1">
+                                账号设置
+                            </NavDropdown.Item>
+                            <NavDropdown.Item>
+                                个人中心
+                            </NavDropdown.Item>
+                            <NavDropdown.Divider/>
+                            <NavDropdown.Item onClick={logout}>
+                                退出登录
+                            </NavDropdown.Item>
+                        </NavDropdown>
+                    </Nav>
+                </>
+            )
+        }
+    }
 
     return (
         <nav className="navbar navbar-expand-lg bg-light sticky-top bg-body-tertiary" id="navbar">
@@ -31,32 +83,9 @@ function NavBar(props: any) {
                             <a className="nav-link active" aria-current="page" href="#">首页</a>
                         </li>
 
-                        <Button onClick={loginOpen} className="text-decoration-none" variant="link">
-                            登录
-                        </Button>
-                        <Button onClick={registerOpen} className="text-decoration-none" variant="link">
-                            注册
-                        </Button>
-
-                        <li className="nav-item">
-                            <a className="nav-link" href="#">消息</a>
-                        </li>
-
-                        {/*FIXME 为什么下拉框失效了*/}
-                        <li className="nav-item dropdown">
-                            <a className="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown"
-                               aria-expanded="false" data-bs-auto-close="true">
-                                个人中心
-                            </a>
-                            <ul className="dropdown-menu">
-                                <li><a className="dropdown-item" href="#">个人主页</a></li>
-                                <li><a className="dropdown-item" href="#">个人信息</a></li>
-                                <li>
-                                    <hr className="dropdown-divider"/>
-                                </li>
-                                <li><a className="dropdown-item" href="#">注销</a></li>
-                            </ul>
-                        </li>
+                        {
+                            ifLoginShow()
+                        }
 
                         <li className="nav-item">
                             <a className="nav-link disabled" href="#" tabIndex={-1}

@@ -5,7 +5,9 @@ import Pagination from "../Pagination";
 import PostItem from "./PostItem";
 import Publish from "../Modal/Publish";
 
-function PostList() {
+function PostList(props: any) {
+
+    const {ticket} = props;
 
     const [postList, setPostList] = useState<any[]>([]);
     const [navigatePages, setNavigatePages] = useState<any[]>([]);
@@ -46,6 +48,20 @@ function PostList() {
         sendRequest(1);
     }, []);
 
+    const ifLoginShow = () => {
+        if (ticket !== undefined) {
+            return (
+                <li style={{marginLeft: "auto"}}>
+                    <button type="button" className="btn btn-success"
+                            data-bs-toggle="modal" data-bs-target="#publishModal"
+                            data-bs-whatever="@mdo" id="publishButton">
+                        <i className="bi bi-pencil-square"></i>&nbsp;发布
+                    </button>
+                </li>
+            )
+        }
+    }
+
     return (
         <div className="container col-9 position-relative" id="post-list">
             {/*页签*/}
@@ -69,16 +85,12 @@ function PostList() {
                                 aria-controls="latest-tab-pane" aria-selected="false">最新
                         </button>
                     </li>
-                    <li style={{marginLeft: "auto"}}>
-                        <button type="button" className="btn btn-success"
-                                data-bs-toggle="modal" data-bs-target="#publishModal"
-                                data-bs-whatever="@mdo" id="publishButton">
-                            <i className="bi bi-pencil-square"></i>&nbsp;发布
-                        </button>
-                    </li>
-                </ul>
 
-                <Publish/>
+                    {
+                        ifLoginShow()
+                    }
+
+                </ul>
 
                 <div className="tab-content" id="myTabContent">
                     <div className="tab-pane fade" id="focus-tab-pane" role="tabpanel"

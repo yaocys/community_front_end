@@ -42,8 +42,11 @@ function SideBar() {
 function HotList() {
     return (
         <div className="card">
-            <div className="card-body">
-                <h5 className="card-title">站内热帖</h5>
+            <div className="card-body d-flex justify-content-center">
+                <h5 className="card-title">
+                    <i className="bi bi-fire" style={{color: "#ff7675"}}></i>
+                    站内热帖
+                </h5>
             </div>
             <ul className="list-group list-group-flush">
                 <a className="list-group-item link-danger" href="">1. 23届求职互助阵地</a>

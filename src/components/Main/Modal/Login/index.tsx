@@ -2,6 +2,7 @@ import React, {useState} from "react";
 import './index.css';
 import axios from "axios";
 import {Button, Modal} from "react-bootstrap";
+import {Cookies} from "react-cookie";
 
 /**
  * 登录模态框组件
@@ -54,7 +55,7 @@ function Login(props: any) {
     }
 
     return (
-        <Modal show={loginShow} onHide={loginClose} id="loginModal">
+        <Modal show={loginShow} onHide={loginClose} id="loginModal" centered={true}>
             <Modal.Header closeButton>
                 <img src="/icon/nav.png" alt="Band" width={88} height={30}
                      className="d-inline-block m-auto"/>
@@ -101,7 +102,7 @@ function Login(props: any) {
             </Modal.Body>
             <Modal.Footer>
                 <Button className="m-auto w-100" onClick={handleSubmit}>
-                    注册
+                    登录
                 </Button>
             </Modal.Footer>
             <p style={{fontSize: 1}} className="text-muted text-center">

@@ -57,7 +57,7 @@ function Register(props: any) {
     }
 
     return (
-        <Modal show={registerShow} onHide={registerClose} id="registerModal">
+        <Modal show={registerShow} onHide={registerClose} id="registerModal" centered={true}>
             <Modal.Header closeButton>
                 <ModalTitle>
                     <Button variant="link" className="text-decoration-none" onClick={switchToLogin}>
