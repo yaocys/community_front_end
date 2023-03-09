@@ -1,5 +1,5 @@
 import React, {useState} from "react";
-import {Button, Modal, ModalTitle} from "react-bootstrap";
+import {Button, Form, FormGroup, Modal, ModalTitle} from "react-bootstrap";
 import './index.css';
 import axios from "axios";
 
@@ -68,24 +68,24 @@ function Register(props: any) {
                 </ModalTitle>
             </Modal.Header>
             <Modal.Body>
-                <form>
-                    <div className="mb-3">
-                        <input type="text" className="form-control" name="username"
-                               placeholder="用户名" onChange={saveFormData('username')}/>
-                    </div>
-                    <div className="mb-3">
-                        <input type="password" className="form-control" name="password"
-                               placeholder="密码" onChange={saveFormData('password')}/>
-                    </div>
-                    <div className="mb-3">
-                        <input type="password" className="form-control" name="passwordConfirm"
-                               placeholder="确认密码" onChange={saveFormData('passwordConfirm')}/>
-                    </div>
-                    <div className="mb-1">
-                        <input type="email" className="form-control" name="email"
-                               placeholder="邮箱" onChange={saveFormData('email')}/>
-                    </div>
-                </form>
+                <Form>
+                    <Form.Group className="mb-3">
+                        <Form.Control type="text" name="username" id="username" placeholder="用户名"
+                                      onChange={saveFormData('username')} autoFocus autoComplete="off"/>
+                    </Form.Group>
+                    <Form.Group className="mb-3">
+                        <Form.Control type="password" name="password" placeholder="密码"
+                                      onChange={saveFormData('password')}/>
+                    </Form.Group>
+                    <Form.Group className="mb-3">
+                        <Form.Control type="password" name="passwordConfirm" placeholder="确认密码"
+                                      onChange={saveFormData('passwordConfirm')}/>
+                    </Form.Group>
+                    <Form.Group className="mb-1">
+                        <Form.Control type="email" name="email" placeholder="邮箱"
+                                      onChange={saveFormData('email')}/>
+                    </Form.Group>
+                </Form>
             </Modal.Body>
             <Modal.Footer>
                 <Button className="m-auto w-100" onClick={handleSubmit}>

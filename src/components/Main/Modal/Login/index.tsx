@@ -1,7 +1,7 @@
 import React, {useState} from "react";
 import './index.css';
 import axios from "axios";
-import {Button, Modal} from "react-bootstrap";
+import {Button, Form, Modal} from "react-bootstrap";
 import {Cookies} from "react-cookie";
 
 /**
@@ -61,26 +61,26 @@ function Login(props: any) {
                      className="d-inline-block m-auto"/>
             </Modal.Header>
             <Modal.Body>
-                <form>
-                    <div className="mb-3">
-                        <input type="text" className="form-control" name="username" id="username"
-                               placeholder="账号" onChange={saveFormData('username')}/>
-                    </div>
-                    <div className="mb-3">
-                        <input type="password" className="form-control" name="password" id="password"
-                               placeholder="密码" onChange={saveFormData('password')}/>
-                    </div>
+                <Form>
+                    <Form.Group className="mb-3">
+                        <Form.Control type="text" name="username" id="username" placeholder="账号"
+                                      onChange={saveFormData('username')} autoFocus autoComplete="off"/>
+                    </Form.Group>
+                    <Form.Group className="mb-3">
+                        <Form.Control type="password" name="password" id="password"
+                                      placeholder="密码" onChange={saveFormData('password')}/>
+                    </Form.Group>
                     <div className="row mb-3">
-                        <div className="col-sm-7">
-                            <input type="text" className="form-control" name="captcha" id="captcha"
-                                   placeholder="验证码" onChange={saveFormData('code')}/>
-                        </div>
+                        <Form.Group className="col-sm-7">
+                            <Form.Control type="text" name="captcha" id="captcha"
+                                          placeholder="验证码" onChange={saveFormData('code')}/>
+                        </Form.Group>
                         <div className="col-sm-5 d-flex">
                             <img src={captcha} onClick={getCaptcha} alt="点击刷新"
                                  style={{width: "100px", height: "35px", marginLeft: "auto"}}/>
                         </div>
                     </div>
-                </form>
+                </Form>
                 <div className="d-flex justify-content-between row">
                     <div className="col-4 align-items-center d-flex">
                         <input type="checkbox" id="rememberMe" name="rememberMe"
