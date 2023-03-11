@@ -3,50 +3,14 @@ import axios from "axios";
 import './index.css'
 import Pagination from "../Pagination";
 import PostItem from "./PostItem";
-import Publish from "../Modal/Publish";
 
 function PostList(props: any) {
 
-    const {ticket} = props;
-
-    const [postList, setPostList] = useState<any[]>([]);
-    const [navigatePages, setNavigatePages] = useState<any[]>([]);
-    const [totalLine, setTotalLine] = useState<any>(0);
-    const [currentPage, setCurrentPage] = useState<number>(1);
-    const [hasPreviousPage, setHasPreviousPage] = useState<boolean>(false);
-    const [hasNextPage, setHasNextPage] = useState<boolean>(true);
-    const [prePage, setPrePage] = useState<number>(1);
-    const [nextPage, setNextPage] = useState<number>(1);
-    const [pages, setPages] = useState<number>(1);
-
-    const sendRequest = (offset: number) => {
-        axios.get('http://localhost:8079/community/apiIndex', {
-            params: {
-                offset: offset,
-                limit: 10
-            }
-        }).then(
-            response => {
-                setPostList(response.data.data.list);
-                setTotalLine(response.data.data.total);
-                setCurrentPage(response.data.data.pageNum);
-                setNavigatePages(response.data.data.navigatepageNums);
-                setHasPreviousPage(response.data.data.hasPreviousPage);
-                setHasNextPage(response.data.data.hasNextPage);
-                setPrePage(response.data.data.prePage);
-                setNextPage(response.data.data.nextPage);
-                setPages(response.data.data.pages);
-            },
-            error => {
-                console.log('请求失败', error);
-            }
-        )
-        window.scrollTo(0, 0);
-    }
-
-    useEffect(() => {
-        sendRequest(1);
-    }, []);
+    const {
+        ticket, detailOpen, postList, sendRequest,
+        currentPage, totalLine, navigatePages,
+        hasPreviousPage, hasNextPage, prePage, nextPage, pages
+    } = props;
 
     const ifLoginShow = () => {
         if (ticket !== undefined) {
@@ -108,7 +72,7 @@ function PostList(props: any) {
                             {
                                 postList && postList.map((post: any) => {
                                     return (
-                                        <PostItem key={post.id} post={post}/>
+                                        <PostItem key={post.id} post={post} detailOpen={detailOpen}/>
                                     )
                                 })
                             }

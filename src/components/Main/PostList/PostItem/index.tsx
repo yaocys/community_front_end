@@ -2,22 +2,22 @@ import React from "react";
 import moment from 'moment';
 
 function PostItem(props: any) {
-    let {post} = props;
+    const {post, detailOpen} = props;
     return (
         <li className="list-group-item list-group-item-action">
-            <a href="" className="d-block">
+            <div onClick={() => detailOpen(post.id)} className="user-select-none" style={{cursor: "pointer"}}>
                 <div className="d-flex justify-content-between" style={{marginBottom: "0.5em"}}>
                     <div className="d-flex">
                         <h5 className="mb-1" style={{color: "#2d3436"}}>{post.title}</h5>
                     </div>
-                    <small className="text-muted"><i
-                        className="bi bi-calendar4-event"></i>&nbsp;&nbsp;{moment(post && post.createTime).format("YYYY-MM-DD HH:MM")}
+                    <small className="text-muted">
+                        <i className="bi bi-calendar4-event"></i>&nbsp;&nbsp;{moment(post && post.createTime).format("YYYY-MM-DD HH:MM")}
                     </small>
                 </div>
                 <small className="text-muted text-truncate d-block">
                     {post.content}
                 </small>
-            </a>
+            </div>
 
             <div className="d-flex justify-content-between align-items-center text-muted" style={{marginTop: "0.5em"}}>
                 <div style={{margin: "auto 0"}} className="d-flex justify-content-center align-items-center">

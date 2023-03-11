@@ -8,6 +8,14 @@ import axios from "axios";
 import Register from "./components/Main/Modal/Register";
 import {Cookies} from "react-cookie";
 import Publish from "./components/Main/Modal/Publish";
+import Detail from "./components/Main/Modal/Detail";
+
+/**
+ * 贴子实体类对象
+ */
+interface DiscussPost {
+
+}
 
 function App(props: any) {
 
@@ -18,7 +26,6 @@ function App(props: any) {
 
     useEffect(() => {
         setTicket(cookie.get("ticket"));
-        console.log(ticket);
     }, [cookie]);
 
     /*
@@ -26,6 +33,8 @@ function App(props: any) {
      */
     const [registerShow, setRegisterShow] = useState<boolean>(false);
     const [loginShow, setLoginShow] = useState<boolean>(false);
+    const [detailShow, setDetailShow] = useState<boolean>(false);
+    const [postDetail, setPostDetail] = useState<any>(undefined);// 单个帖子详情对象
 
     const registerClose = () => {
         setRegisterShow(false);
@@ -56,6 +65,29 @@ function App(props: any) {
     }
 
     /**
+     * 获取帖子详情
+     * 难道有参数的调用都需要写成箭头函数？
+     * @param discussPostId
+     */
+    const detailOpen = (discussPostId: string) => {
+        setDetailShow(true);
+        axios.get(`http://localhost:8079/community/post/detail/${discussPostId}`).then(
+            response => {
+                // 获取到帖子详情数据
+                setPostDetail(response.data.data);
+            },
+            error => {
+                console.log('请求失败', error);
+            }
+        )
+    }
+
+    const detailClose = () => {
+        setPostDetail(undefined);
+        setDetailShow(false);
+    }
+
+    /**
      * 获取验证码图片
      */
     const getCaptcha = () => {
@@ -79,7 +111,9 @@ function App(props: any) {
     return (
         <>
             <NavBar registerOpen={registerOpen} loginOpen={loginOpen} ticket={ticket} setTicket={setTicket}/>
-            <Main ticket={ticket}/>
+
+            <Main ticket={ticket} detailOpen={detailOpen}/>
+
             <Login captcha={captcha} getCaptcha={getCaptcha}
                    loginShow={loginShow} loginClose={loginClose}
                    switchToRegister={switchToRegister}/>
@@ -88,6 +122,8 @@ function App(props: any) {
                       switchToLogin={switchToLogin}/>
 
             <Publish/>
+
+            <Detail detailShow={detailShow} detailClose={detailClose} postDetail={postDetail}/>
 
             <Footer/>
         </>

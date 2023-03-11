@@ -1,0 +1,15 @@
+#detailModal {
+    --bs-modal-width: 60%;
+}
+
+#icons2 > a > i {
+    margin-right: 2em;
+}
+
+#icons2 > a {
+    color: #575a5e;
+}
+
+#icons2 > a:hover {
+    color: #0a58ca;
+}
