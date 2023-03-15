@@ -77,6 +77,16 @@ function PostList(props: any) {
                                 })
                             }
                         </div>
+                        <Pagination sendRequest={sendRequest}
+                                    currentPage={currentPage}
+                                    totalLine={totalLine}
+                                    navigatePages={navigatePages}
+                                    hasPreviousPage={hasPreviousPage}
+                                    hasNextPage={hasNextPage}
+                                    prePage={prePage}
+                                    nextPage={nextPage}
+                                    pages={pages}
+                        />
                     </div>
                 </div>
             </nav>
@@ -95,17 +105,6 @@ function PostList(props: any) {
                     </div>
                 </div>
             </div>
-
-            <Pagination sendRequest={sendRequest}
-                        currentPage={currentPage}
-                        totalLine={totalLine}
-                        navigatePages={navigatePages}
-                        hasPreviousPage={hasPreviousPage}
-                        hasNextPage={hasNextPage}
-                        prePage={prePage}
-                        nextPage={nextPage}
-                        pages={pages}
-            />
         </div>
     )
 }

@@ -36,6 +36,16 @@ function App(props: any) {
     const [detailShow, setDetailShow] = useState<boolean>(false);
     const [postDetail, setPostDetail] = useState<any>(undefined);// 单个帖子详情对象
 
+    const [commentList, setCommentList] = useState<any[]>([]);
+    const [navigatePages, setNavigatePages] = useState<any[]>([]);
+    const [totalLine, setTotalLine] = useState<any>(0);
+    const [currentPage, setCurrentPage] = useState<number>(1);
+    const [hasPreviousPage, setHasPreviousPage] = useState<boolean>(false);
+    const [hasNextPage, setHasNextPage] = useState<boolean>(true);
+    const [prePage, setPrePage] = useState<number>(1);
+    const [nextPage, setNextPage] = useState<number>(1);
+    const [pages, setPages] = useState<number>(1);
+
     const registerClose = () => {
         setRegisterShow(false);
     }
@@ -65,6 +75,35 @@ function App(props: any) {
     }
 
     /**
+     * 发送获取评论的请求
+     */
+    const sendRequest = (offset: number, discussPostId: string) => {
+        console.log("请求获取评论")
+        axios.get(`http://localhost:8079/community/comment/query/${discussPostId}`, {
+            params: {
+                offset: offset,
+                limit: 5
+            }
+        }).then(
+            response => {
+                setCommentList(response.data.data.list);
+                setTotalLine(response.data.data.total);
+                setCurrentPage(response.data.data.pageNum);
+                setNavigatePages(response.data.data.navigatepageNums);
+                setHasPreviousPage(response.data.data.hasPreviousPage);
+                setHasNextPage(response.data.data.hasNextPage);
+                setPrePage(response.data.data.prePage);
+                setNextPage(response.data.data.nextPage);
+                setPages(response.data.data.pages);
+            },
+            error => {
+                console.log('请求失败', error);
+            }
+        )
+        window.scrollTo(0, 0);
+    }
+
+    /**
      * 获取帖子详情
      * 难道有参数的调用都需要写成箭头函数？
      * @param discussPostId
@@ -75,12 +114,14 @@ function App(props: any) {
             response => {
                 // 获取到帖子详情数据
                 setPostDetail(response.data.data);
+                sendRequest(1, response.data.data.post.id);
             },
             error => {
                 console.log('请求失败', error);
             }
-        )
+        );
     }
+
 
     const detailClose = () => {
         setPostDetail(undefined);
@@ -123,7 +164,19 @@ function App(props: any) {
 
             <Publish/>
 
-            <Detail detailShow={detailShow} detailClose={detailClose} postDetail={postDetail}/>
+            <Detail detailShow={detailShow} detailClose={detailClose}
+                    postDetail={postDetail}
+                    commentList={commentList}
+                    sendRequest={sendRequest}
+                    currentPage={currentPage}
+                    totalLine={totalLine}
+                    navigatePages={navigatePages}
+                    hasPreviousPage={hasPreviousPage}
+                    hasNextPage={hasNextPage}
+                    prePage={prePage}
+                    nextPage={nextPage}
+                    pages={pages}
+            />
 
             <Footer/>
         </>
