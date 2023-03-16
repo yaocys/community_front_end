@@ -10,13 +10,29 @@ import {Button, Dropdown, Nav, NavDropdown} from "react-bootstrap";
 function NavBar(props: any) {
 
     const {registerOpen, loginOpen, ticket, setTicket} = props;
-    const cookie = new Cookies;
+    const cookie = new Cookies();
     const logout = () => {
-        setTicket(undefined);
-        cookie.remove('ticket');
-        // 向后端发送请求
+        axios.get('http://localhost:8079/community/logout', {
+            withCredentials: true
+        }).then(
+            response => {
+                /*
+                因为是异步请求，所以这里的清除cookie要放在里面，不然发请求的时候cookie就已经被清除了
+                 */
+                setTicket(undefined);
+                cookie.remove('ticket');
+                const code = response.data.code;
+                if (code === 200) alert("注销成功");
+            },
+            error => {
+                console.log('请求失败', error);
+            }
+        )
     }
 
+    /**
+     * 用户登录状态不同的不同的状态栏显示
+     */
     const ifLoginShow = () => {
         if (ticket === undefined) {
             // 用户未登录

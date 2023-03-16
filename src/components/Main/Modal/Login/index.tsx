@@ -30,6 +30,12 @@ function Login(props: any) {
         }).then(
             response => {
                 console.log(response.data);
+                // 检查返回状态码
+                const code = response.data.code;
+                if (code === 200) {
+                    // 登录成功，关闭模态框
+                    loginClose();
+                }
             },
             error => {
                 console.log('请求失败', error);
