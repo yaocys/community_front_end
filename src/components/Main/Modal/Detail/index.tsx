@@ -5,6 +5,7 @@ import moment from "moment/moment";
 import Accordion from 'react-bootstrap/Accordion';
 import {useAccordionButton} from 'react-bootstrap/AccordionButton';
 import Pagination from "../../Pagination";
+import axios from "axios";
 
 /**
  * 回复框的触发器
@@ -25,6 +26,42 @@ function Detail(props: any) {
         detailShow, detailClose, postDetail, commentList, sendRequest,
         currentPage, totalLine, hasPreviousPage, hasNextPage, prePage, nextPage, pages, navigatePages
     } = props;
+
+    const [comment, setComment] = useState<string>("");
+
+    const saveFormData = (type: string) => {
+        return (e: any) => {
+            let value = e.target.value;
+            switch (type) {
+                case "username":
+                    setComment(value);
+                    break;
+            }
+        }
+    }
+
+    const handleSubmit = () => {
+        axios.post('http://localhost:8079/community/login', {
+            comment: {}
+        }, {
+            headers: {
+                "Content-Type": 'application/x-www-form-urlencoded'
+            },
+            withCredentials: true
+        }).then(
+            response => {
+                console.log(response.data);
+                // 检查返回状态码
+                const code = response.data.code;
+                if (code === 200) {
+                    // 登录成功，关闭模态框
+                }
+            },
+            error => {
+                console.log('请求失败', error);
+            }
+        )
+    }
 
     return (
         <Modal id="detailModal" show={detailShow} onHide={detailClose} centered={true} scrollable={true}>
@@ -65,7 +102,11 @@ function Detail(props: any) {
                         {postDetail && postDetail.post.content}
                     </div>
                 </div>
-                <Comment commentList={commentList}/>
+
+                <Accordion>
+                    <Comment commentList={commentList} currentPage={currentPage}/>
+                </Accordion>
+
                 <Pagination sendRequest={sendRequest}
                             currentPage={currentPage}
                             totalLine={totalLine}
@@ -102,7 +143,8 @@ function Detail(props: any) {
  */
 function Comment(props: any) {
 
-    const {commentList} = props;
+    const {commentList, currentPage} = props;
+    let floor = 1;
 
     return (
         <div className="container mt-5">
@@ -115,6 +157,7 @@ function Comment(props: any) {
                                      likeCount={comment.likeCount}
                                      replyCount={comment.replyCount}
                                      replyList={comment.replies}
+                                     floor={(currentPage - 1) * 5 + floor++}
                         />
                     )
                 })
@@ -129,7 +172,7 @@ function Comment(props: any) {
  */
 function CommentItem(props: any) {
 
-    const {user, comment, likeStatus, likeCount, replyCount, replyList} = props;
+    const {user, comment, likeStatus, likeCount, replyCount, replyList, floor} = props;
 
     return (
         <ul className="list-unstyled mt-4">
@@ -140,15 +183,14 @@ function CommentItem(props: any) {
                          alt="用户头像"/>
                 </a>
                 <div className="media-body col-11">
-                    <Accordion>
-                        <div className="mt-0 d-flex justify-content-between">
-                            <span className="text-success" style={{fontSize: "small"}}>{user.username}</span>
-                            <span className="badge badge-secondary float-right floor">1#</span>
-                        </div>
-                        <div className="mt-2">
-                            {comment.content}
-                        </div>
-                        <div className="mt-3 text-muted d-flex justify-content-between">
+                    <div className="mt-0 d-flex justify-content-between">
+                        <span className="text-success" style={{fontSize: "small"}}>{user.username}</span>
+                        <span className="badge badge-secondary float-right floor">{floor} #</span>
+                    </div>
+                    <div className="mt-2">
+                        {comment.content}
+                    </div>
+                    <div className="mt-3 text-muted d-flex justify-content-between">
                                 <span className="text-muted" style={{fontSize: "small"}}>
                                     发布于 <b>{moment(comment.createTime).format("YYYY-MM-DD HH:MM")}</b>
                                 </span>
@@ -159,27 +201,26 @@ function CommentItem(props: any) {
                                     </a>
                                 </li>
                                 <li className="d-inline ml-2">
-                                    <CustomToggle eventKey="0">
+                                    <CustomToggle eventKey={floor}>
                                         <i className="bi bi-chat-dots"> {replyCount} </i>
                                     </CustomToggle>
                                 </li>
                             </ul>
-                        </div>
-                        <Reply replyList={replyList} replyCount={replyCount}/>
+                    </div>
+                    <Reply replyList={replyList} replyCount={replyCount} floor={floor}/>
                         {/*回复输入框*/}
-                        <Accordion.Collapse eventKey="0">
-                            <InputGroup className="mt-1" size="sm">
-                                <Form.Control
-                                    placeholder={`回复${user.username}`}
-                                    aria-label="Recipient's username"
-                                    aria-describedby="basic-addon2"
-                                />
-                                <Button variant="outline-info" id="button-addon2">
-                                    回复
-                                </Button>
-                            </InputGroup>
-                        </Accordion.Collapse>
-                    </Accordion>
+                    <Accordion.Collapse eventKey={floor}>
+                        <InputGroup className="mt-1" size="sm">
+                            <Form.Control
+                                placeholder={`回复${user.username}`}
+                                aria-label="Recipient's username"
+                                aria-describedby="basic-addon2"
+                            />
+                            <Button variant="outline-info" id="button-addon2">
+                                回复
+                            </Button>
+                        </InputGroup>
+                    </Accordion.Collapse>
                 </div>
             </li>
         </ul>
@@ -191,7 +232,8 @@ function CommentItem(props: any) {
  */
 function Reply(props: any) {
 
-    const {replyList, replyCount} = props;
+    const {replyList, replyCount, floor} = props;
+    let replyFloor = 1;
 
     /**
      * 有回复才显示回复区域
@@ -212,6 +254,7 @@ function Reply(props: any) {
                                    likeCount={item.likeCount}
                                    likeStatus={item.likeStatus}
                                    reply={item.reply}
+                                   floorId={floor + '' + replyFloor++}
                         />
                     )
                 })
@@ -225,7 +268,7 @@ function Reply(props: any) {
  */
 function ReplyItem(props: any) {
 
-    const {user, target, likeCount, likeStatus, reply} = props;
+    const {user, target, likeCount, likeStatus, reply, floorId} = props;
 
     const fun = (obj: any) => {
         if (obj !== null) return (
@@ -255,13 +298,13 @@ function ReplyItem(props: any) {
                             <i className="bi bi-hand-thumbs-up"> {likeCount} </i>
                         </a>
                     </li>
-                    <CustomToggle eventKey="1">
+                    <CustomToggle eventKey={floorId}>
                         <i className="bi bi-chat-dots"></i>
                     </CustomToggle>
                 </ul>
 
             </div>
-            <Accordion.Collapse eventKey="1">
+            <Accordion.Collapse eventKey={floorId}>
                 <InputGroup className="mt-3" size="sm">
                     <Form.Control
                         placeholder={`回复${user.username}`}

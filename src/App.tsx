@@ -35,6 +35,7 @@ function App(props: any) {
     const [loginShow, setLoginShow] = useState<boolean>(false);
     const [detailShow, setDetailShow] = useState<boolean>(false);
     const [postDetail, setPostDetail] = useState<any>(undefined);// 单个帖子详情对象
+    const [publishShow, setPublishShow] = useState<any>(false);
 
     const [commentList, setCommentList] = useState<any[]>([]);
     const [navigatePages, setNavigatePages] = useState<any[]>([]);
@@ -72,6 +73,14 @@ function App(props: any) {
         setRegisterShow(false);
         getCaptcha();
         setLoginShow(true);
+    }
+
+    const publishOpen = () => {
+        setPublishShow(true);
+    }
+
+    const publishClose = () => {
+        setPublishShow(false);
     }
 
     /**
@@ -162,7 +171,7 @@ function App(props: any) {
             <Register registerShow={registerShow} registerClose={registerClose}
                       switchToLogin={switchToLogin}/>
 
-            <Publish/>
+            <Publish publishClose={publishClose} publishShow={publishShow}/>
 
             <Detail detailShow={detailShow} detailClose={detailClose}
                     postDetail={postDetail}

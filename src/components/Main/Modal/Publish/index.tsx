@@ -1,21 +1,30 @@
 import React, {useState} from "react";
 import axios from "axios";
+import {Button, Modal, Form} from "react-bootstrap";
 
 /**
  * 发帖模态框
  * @constructor
  */
-function Publish() {
+function Publish(props: any) {
+
+    const {publishShow, publishClose} = props;
 
     const [title, setTitle] = useState<string>("");
     const [content, setContent] = useState<string>("");
 
-    const handleTitle = (e: any) => {
-        setTitle(e.target.value);
-    }
-
-    const handleContent = (e: any) => {
-        setContent(e.target.value);
+    const saveFormData = (type: string) => {
+        return (e: any) => {
+            let value = e.target.value;
+            switch (type) {
+                case "title":
+                    setTitle(value);
+                    break;
+                case "content":
+                    setContent(content);
+                    break;
+            }
+        }
     }
 
     const handleSubmit = () => {
@@ -29,7 +38,8 @@ function Publish() {
             withCredentials: true
         }).then(
             response => {
-                console.log(response.data);
+                const code = response.data.code;
+                if (code === 200) alert("发布成功");
             },
             error => {
                 console.log('请求失败', error);
@@ -38,39 +48,46 @@ function Publish() {
     }
 
     return (
-        <div className="modal fade" id="publishModal" tabIndex={-1} role="dialog"
-             aria-labelledby="publishModalLabel" aria-hidden="true" style={{letterSpacing: "1px"}}>
-            <div className="modal-dialog modal-lg" role="document">
-                <div className="modal-content">
-                    <div className="modal-header">
-                        <h1 className="modal-title fs-5" id="publishModalLabel">
-                            <i className="bi bi-pencil-square">&nbsp;</i>发布动态
-                        </h1>
-                        <button type="button" className="btn-close" data-bs-dismiss="modal" aria-label="Close">
-                            <span aria-hidden="true">&times;</span>
-                        </button>
-                    </div>
-                    <div className="modal-body">
-                        <form onSubmit={handleSubmit}>
-                            <div className="mb-3">
-                                {/*TODO 点击发布按钮，自动设置焦点到第一个编辑框*/}
-                                <input type="text" className="form-control" id="title"
-                                       placeholder="文章标题" onChange={handleTitle}/>
-                            </div>
-                            <div className="mb-3">
-                                <textarea className="form-control border-0" id="content" rows={15}
-                                          placeholder="此刻你想和大家分享什么…" onChange={handleContent}>
-                                </textarea>
-                            </div>
-                        </form>
-                    </div>
-                    <div className="modal-footer">
-                        <button type="button" className="btn btn-secondary btn-sm" data-bs-dismiss="modal">取消</button>
-                        <button type="submit" className="btn btn-success btn-sm" onClick={handleSubmit}>发布</button>
-                    </div>
-                </div>
-            </div>
-        </div>
+        <Modal show={publishShow} onHide={publishClose}>
+            <Modal.Header closeButton>
+                <Modal.Title>
+                    <h1 className="modal-title fs-5" id="publishModalLabel">
+                        <i className="bi bi-pencil-square">&nbsp;</i>发布动态
+                    </h1>
+                </Modal.Title>
+            </Modal.Header>
+            <Modal.Body>
+                <Form>
+                    <Form.Group className="mb-3" controlId="exampleForm.ControlInput1">
+                        <Form.Label>Email address</Form.Label>
+                        <Form.Control
+                            type="text"
+                            placeholder="起个标题吧"
+                            autoFocus
+                            onChange={saveFormData('title')}
+                        />
+                    </Form.Group>
+                    <Form.Group
+                        className="mb-3"
+                        controlId="exampleForm.ControlTextarea1"
+                    >
+                        <Form.Label>Example textarea</Form.Label>
+                        <Form.Control as="textarea" rows={15}
+                                      placeholder="此刻你想与大家分享什么…"
+                                      onChange={saveFormData('content')}/>
+                    </Form.Group>
+                </Form>
+            </Modal.Body>
+            <Modal.Footer>
+                <Button variant="secondary" onClick={publishClose}>
+                    取消
+                </Button>
+                <Button variant="primary" onClick={handleSubmit}>
+                    发布
+                </Button>
+            </Modal.Footer>
+        </Modal>
+
     )
 }
 
