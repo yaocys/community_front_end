@@ -27,7 +27,8 @@ function Main(props: any) {
             params: {
                 offset: offset,
                 limit: 10
-            }
+            },
+            withCredentials: true
         }).then(
             response => {
                 setPostList(response.data.data.list);

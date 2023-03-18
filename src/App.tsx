@@ -87,7 +87,6 @@ function App(props: any) {
      * 发送获取评论的请求
      */
     const sendRequest = (offset: number, discussPostId: string) => {
-        console.log("请求获取评论")
         axios.get(`http://localhost:8079/community/comment/query/${discussPostId}`, {
             params: {
                 offset: offset,

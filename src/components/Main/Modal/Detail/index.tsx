@@ -1,11 +1,12 @@
-import React, {useState} from "react";
-import {Button, Form, FormControl, FormGroup, Modal, Card, InputGroup} from "react-bootstrap";
+import React, {useRef, useState} from "react";
+import {Button, Form, FormControl, FormGroup, Modal, InputGroup} from "react-bootstrap";
 import './index.css';
 import moment from "moment/moment";
 import Accordion from 'react-bootstrap/Accordion';
 import {useAccordionButton} from 'react-bootstrap/AccordionButton';
 import Pagination from "../../Pagination";
 import axios from "axios";
+import {Cookies} from "react-cookie";
 
 /**
  * 回复框的触发器
@@ -22,30 +23,35 @@ function CustomToggle({children, eventKey}: { children: any, eventKey: any }) {
 
 function Detail(props: any) {
 
+    const cookie = new Cookies();
+
     const {
         detailShow, detailClose, postDetail, commentList, sendRequest,
         currentPage, totalLine, hasPreviousPage, hasNextPage, prePage, nextPage, pages, navigatePages
     } = props;
 
-    const [comment, setComment] = useState<string>("");
+    const [comment, setComment] = useState<string>("");// 回复楼主的内容
 
-    const saveFormData = (type: string) => {
-        return (e: any) => {
-            let value = e.target.value;
-            switch (type) {
-                case "username":
-                    setComment(value);
-                    break;
-            }
-        }
+    let commentRef = useRef<HTMLInputElement>(null);
+
+    // 柯里化，对函数再封一层
+    const sendRequestCurring = (offset: number) => {
+        return sendRequest(offset, postDetail.post.id);
     }
 
-    const handleSubmit = () => {
-        axios.post('http://localhost:8079/community/login', {
-            comment: {}
+    const saveComment = (e: any) => {
+        setComment(e.target.value);
+    }
+
+    const handleSubmit = (discussPostId: string) => {
+        axios.post(`http://localhost:8079/community/comment/add/${discussPostId}`, {
+            userId: cookie.get('userId'),
+            entityType: 1,
+            entityId: discussPostId,
+            content: comment
         }, {
             headers: {
-                "Content-Type": 'application/x-www-form-urlencoded'
+                'Content-Type': 'application/json'
             },
             withCredentials: true
         }).then(
@@ -53,8 +59,10 @@ function Detail(props: any) {
                 console.log(response.data);
                 // 检查返回状态码
                 const code = response.data.code;
-                if (code === 200) {
-                    // 登录成功，关闭模态框
+                if (code === 200 && commentRef.current) {
+                    commentRef.current.value = '';
+                    setComment('');
+                    alert('回帖成功')
                 }
             },
             error => {
@@ -87,7 +95,7 @@ function Detail(props: any) {
                 </Modal.Title>
                 <Button className="btn-sm"><i className="bi bi-plus-lg"></i>&nbsp;关注</Button>
             </Modal.Header>
-            <Modal.Body>
+            <Modal.Body style={{minHeight: "500px"}}>
                 {/*内容*/}
                 <div className="container pb-3 pt-3" style={{backgroundColor: "#f1f2f6"}}>
                     <Modal.Title>
@@ -107,7 +115,7 @@ function Detail(props: any) {
                     <Comment commentList={commentList} currentPage={currentPage}/>
                 </Accordion>
 
-                <Pagination sendRequest={sendRequest}
+                <Pagination sendRequest={sendRequestCurring}
                             currentPage={currentPage}
                             totalLine={totalLine}
                             navigatePages={navigatePages}
@@ -121,7 +129,8 @@ function Detail(props: any) {
             <Modal.Footer>
                 <Form className="w-100">
                     <FormGroup>
-                        <FormControl type="text" id="reply" placeholder="评论千万条，友善第一条" className=""/>
+                        <FormControl type="text" id="comment" placeholder="评论千万条，友善第一条"
+                                     onChange={saveComment} ref={commentRef}/>
                     </FormGroup>
                 </Form>
                 <div className="d-flex justify-content-between w-100 align-items-center">
@@ -131,7 +140,7 @@ function Detail(props: any) {
                         <a href=""><i className="bi bi-star"> 4 </i></a>
                         <a href=""><i className="bi bi-share"/></a>
                     </div>
-                    <Button type="submit" size="sm">回帖</Button>
+                    <Button type="submit" size="sm" onClick={() => handleSubmit(postDetail.post.id)}>回帖</Button>
                 </div>
             </Modal.Footer>
         </Modal>
@@ -194,21 +203,21 @@ function CommentItem(props: any) {
                                 <span className="text-muted" style={{fontSize: "small"}}>
                                     发布于 <b>{moment(comment.createTime).format("YYYY-MM-DD HH:MM")}</b>
                                 </span>
-                            <ul className="d-inline float-right" style={{fontSize: "small"}}>
-                                <li className="d-inline ml-2">
-                                    <a href="#" className="text-primary">
-                                        <i className="bi bi-hand-thumbs-up"> {likeCount} </i>
-                                    </a>
-                                </li>
-                                <li className="d-inline ml-2">
-                                    <CustomToggle eventKey={floor}>
-                                        <i className="bi bi-chat-dots"> {replyCount} </i>
-                                    </CustomToggle>
-                                </li>
-                            </ul>
+                        <ul className="d-inline float-right" style={{fontSize: "small"}}>
+                            <li className="d-inline ml-2">
+                                <a href="#" className="text-primary">
+                                    <i className="bi bi-hand-thumbs-up"> {likeCount} </i>
+                                </a>
+                            </li>
+                            <li className="d-inline ml-2">
+                                <CustomToggle eventKey={floor}>
+                                    <i className="bi bi-chat-dots"> {replyCount} </i>
+                                </CustomToggle>
+                            </li>
+                        </ul>
                     </div>
                     <Reply replyList={replyList} replyCount={replyCount} floor={floor}/>
-                        {/*回复输入框*/}
+                    {/*回复输入框*/}
                     <Accordion.Collapse eventKey={floor}>
                         <InputGroup className="mt-1" size="sm">
                             <Form.Control

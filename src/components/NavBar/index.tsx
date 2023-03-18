@@ -21,6 +21,9 @@ function NavBar(props: any) {
                  */
                 setTicket(undefined);
                 cookie.remove('ticket');
+                cookie.remove('userId');
+                cookie.remove('username');
+                cookie.remove('headerUrl');
                 const code = response.data.code;
                 if (code === 200) alert("注销成功");
             },

@@ -29,12 +29,11 @@ function Login(props: any) {
             withCredentials: true
         }).then(
             response => {
-                console.log(response.data);
                 // 检查返回状态码
                 const code = response.data.code;
                 if (code === 200) {
-                    // 登录成功，关闭模态框
                     loginClose();
+                    window.location.reload();
                 }
             },
             error => {
