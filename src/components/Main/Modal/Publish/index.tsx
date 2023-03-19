@@ -39,7 +39,10 @@ function Publish(props: any) {
         }).then(
             response => {
                 const code = response.data.code;
-                if (code === 200) alert("发布成功");
+                if (code === 200) {
+                    alert("发布成功");
+                    publishClose();
+                }
             },
             error => {
                 console.log('请求失败', error);
@@ -48,7 +51,7 @@ function Publish(props: any) {
     }
 
     return (
-        <Modal show={publishShow} onHide={publishClose}>
+        <Modal show={publishShow} onHide={publishClose} size="lg">
             <Modal.Header closeButton>
                 <Modal.Title>
                     <h1 className="modal-title fs-5" id="publishModalLabel">
@@ -59,7 +62,6 @@ function Publish(props: any) {
             <Modal.Body>
                 <Form>
                     <Form.Group className="mb-3" controlId="exampleForm.ControlInput1">
-                        <Form.Label>Email address</Form.Label>
                         <Form.Control
                             type="text"
                             placeholder="起个标题吧"
@@ -71,7 +73,6 @@ function Publish(props: any) {
                         className="mb-3"
                         controlId="exampleForm.ControlTextarea1"
                     >
-                        <Form.Label>Example textarea</Form.Label>
                         <Form.Control as="textarea" rows={15}
                                       placeholder="此刻你想与大家分享什么…"
                                       onChange={saveFormData('content')}/>

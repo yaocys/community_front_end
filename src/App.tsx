@@ -3,26 +3,25 @@ import Main from "./components/Main";
 import Footer from "./components/Footer";
 import './App.css';
 import Login from "./components/Main/Modal/Login";
-import React, {useEffect, useState} from "react";
+import React, {useEffect, useRef, useState} from "react";
 import axios from "axios";
 import Register from "./components/Main/Modal/Register";
 import {Cookies} from "react-cookie";
 import Publish from "./components/Main/Modal/Publish";
 import Detail from "./components/Main/Modal/Detail";
 
-/**
- * 贴子实体类对象
- */
-interface DiscussPost {
-
+interface mainRef {
+    refresh: () => void;
 }
+
+const cookie = new Cookies();
 
 function App(props: any) {
 
     const [captcha, setCaptcha] = useState<string>("");
-    const [ticket, setTicket] = useState(undefined);
+    const [ticket, setTicket] = useState<string>('');
 
-    const cookie = new Cookies();
+    const mainRef = useRef<mainRef>(null);
 
     useEffect(() => {
         setTicket(cookie.get("ticket"));
@@ -81,6 +80,7 @@ function App(props: any) {
 
     const publishClose = () => {
         setPublishShow(false);
+        mainRef.current?.refresh();
     }
 
     /**
@@ -130,10 +130,10 @@ function App(props: any) {
         );
     }
 
-
     const detailClose = () => {
         setPostDetail(undefined);
         setDetailShow(false);
+        mainRef.current?.refresh();
     }
 
     /**
@@ -161,7 +161,7 @@ function App(props: any) {
         <>
             <NavBar registerOpen={registerOpen} loginOpen={loginOpen} ticket={ticket} setTicket={setTicket}/>
 
-            <Main ticket={ticket} detailOpen={detailOpen}/>
+            <Main ticket={ticket} detailOpen={detailOpen} ref={mainRef} publishOpen={publishOpen}/>
 
             <Login captcha={captcha} getCaptcha={getCaptcha}
                    loginShow={loginShow} loginClose={loginClose}

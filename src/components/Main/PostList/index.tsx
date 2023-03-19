@@ -9,16 +9,14 @@ function PostList(props: any) {
     const {
         ticket, detailOpen, postList, sendRequest,
         currentPage, totalLine, navigatePages,
-        hasPreviousPage, hasNextPage, prePage, nextPage, pages
+        hasPreviousPage, hasNextPage, prePage, nextPage, pages, publishOpen
     } = props;
 
     const ifLoginShow = () => {
         if (ticket !== undefined) {
             return (
                 <li style={{marginLeft: "auto"}}>
-                    <button type="button" className="btn btn-success"
-                            data-bs-toggle="modal" data-bs-target="#publishModal"
-                            data-bs-whatever="@mdo" id="publishButton">
+                    <button type="button" className="btn btn-success" onClick={publishOpen}>
                         <i className="bi bi-pencil-square"></i>&nbsp;发布
                     </button>
                 </li>

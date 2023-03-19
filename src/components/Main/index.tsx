@@ -1,12 +1,23 @@
-import React, {useEffect, useState} from "react";
+import React, {useEffect, useState, forwardRef, useImperativeHandle, RefObject} from "react";
 import './index.css';
 
 import PostList from "./PostList";
 import SideBar from "./SideBar";
 import axios from "axios";
 
-function Main(props: any) {
-    const {ticket, detailOpen} = props;
+interface MainProps {
+    ticket: string,
+    detailOpen: (discussPostId: string) => void;
+    publishOpen: () => void;
+}
+
+interface mainRef {
+    refresh: () => void;
+}
+
+const Main = forwardRef<mainRef, MainProps>((props, ref) => {
+
+    const {ticket, detailOpen, publishOpen} = props;
 
     const [postList, setPostList] = useState<any[]>([]);
     const [navigatePages, setNavigatePages] = useState<any[]>([]);
@@ -17,6 +28,10 @@ function Main(props: any) {
     const [prePage, setPrePage] = useState<number>(1);
     const [nextPage, setNextPage] = useState<number>(1);
     const [pages, setPages] = useState<number>(1);
+
+    const refresh = () => {
+        return sendRequest(currentPage);
+    }
 
     /**
      * 获取分页列表
@@ -48,6 +63,10 @@ function Main(props: any) {
         window.scrollTo(0, 0);
     }
 
+    useImperativeHandle(ref, () => ({
+        refresh
+    }));
+
     useEffect(() => {
         sendRequest(1);
     }, []);
@@ -65,11 +84,12 @@ function Main(props: any) {
                       prePage={prePage}
                       nextPage={nextPage}
                       pages={pages}
+                      publishOpen={publishOpen}
             />
             <SideBar/>
         </div>
     )
-}
+});
 
 export default Main;
 

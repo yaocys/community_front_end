@@ -20,10 +20,9 @@ function CustomToggle({children, eventKey}: { children: any, eventKey: any }) {
     );
 }
 
+const cookie = new Cookies();
 
 function Detail(props: any) {
-
-    const cookie = new Cookies();
 
     const {
         detailShow, detailClose, postDetail, commentList, sendRequest,
@@ -37,6 +36,10 @@ function Detail(props: any) {
     // 柯里化，对函数再封一层
     const sendRequestCurring = (offset: number) => {
         return sendRequest(offset, postDetail.post.id);
+    }
+
+    const refresh = () => {
+        return sendRequestCurring(currentPage);
     }
 
     const saveComment = (e: any) => {
@@ -56,14 +59,12 @@ function Detail(props: any) {
             withCredentials: true
         }).then(
             response => {
-                console.log(response.data);
-                // 检查返回状态码
                 const code = response.data.code;
                 if (code === 200 && commentRef.current) {
                     commentRef.current.value = '';
                     setComment('');
                     alert('回帖成功');
-                    sendRequestCurring(currentPage);
+                    refresh();
                 }
             },
             error => {
@@ -113,7 +114,8 @@ function Detail(props: any) {
                 </div>
 
                 <Accordion>
-                    <Comment commentList={commentList} currentPage={currentPage}/>
+                    <Comment commentList={commentList} currentPage={currentPage}
+                             refresh={refresh} discussPostId={postDetail && postDetail.post.id}/>
                 </Accordion>
 
                 <Pagination sendRequest={sendRequestCurring}
@@ -153,7 +155,7 @@ function Detail(props: any) {
  */
 function Comment(props: any) {
 
-    const {commentList, currentPage} = props;
+    const {commentList, currentPage, refresh, discussPostId} = props;
     let floor = 1;
 
     return (
@@ -168,6 +170,8 @@ function Comment(props: any) {
                                      replyCount={comment.replyCount}
                                      replyList={comment.replies}
                                      floor={(currentPage - 1) * 5 + floor++}
+                                     refresh={refresh}
+                                     discussPostId={discussPostId}
                         />
                     )
                 })
@@ -182,7 +186,41 @@ function Comment(props: any) {
  */
 function CommentItem(props: any) {
 
-    const {user, comment, likeStatus, likeCount, replyCount, replyList, floor} = props;
+    const {user, comment, likeStatus, likeCount, replyCount, replyList, floor, refresh, discussPostId} = props;
+
+    const [reply, setReply] = useState<string>('');// 回复评论
+    let replyRef = useRef<HTMLInputElement>(null);
+
+    const saveReply = (e: any) => {
+        setReply(e.target.value);
+    }
+
+    const handleSubmit = () => {
+        axios.post(`http://localhost:8079/community/comment/add/${discussPostId}`, {
+            userId: cookie.get('userId'),
+            entityType: 2,
+            entityId: comment.id,
+            content: reply
+        }, {
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            withCredentials: true
+        }).then(
+            response => {
+                const code = response.data.code;
+                if (code === 200 && replyRef.current) {
+                    replyRef.current.value = '';
+                    setReply('');
+                    alert('回复成功');
+                    refresh();
+                }
+            },
+            error => {
+                console.log('请求失败', error);
+            }
+        )
+    }
 
     return (
         <ul className="list-unstyled mt-4">
@@ -217,7 +255,9 @@ function CommentItem(props: any) {
                             </li>
                         </ul>
                     </div>
-                    <Reply replyList={replyList} replyCount={replyCount} floor={floor}/>
+                    <Reply replyList={replyList} replyCount={replyCount} floor={floor} refresh={refresh}
+                           discussPostId={discussPostId} commentId={comment && comment.id}
+                    />
                     {/*回复输入框*/}
                     <Accordion.Collapse eventKey={floor}>
                         <InputGroup className="mt-1" size="sm">
@@ -225,8 +265,10 @@ function CommentItem(props: any) {
                                 placeholder={`回复${user.username}`}
                                 aria-label="Recipient's username"
                                 aria-describedby="basic-addon2"
+                                onChange={saveReply}
+                                ref={replyRef}
                             />
-                            <Button variant="outline-info" id="button-addon2">
+                            <Button variant="outline-info" id="button-addon2" onClick={handleSubmit}>
                                 回复
                             </Button>
                         </InputGroup>
@@ -242,7 +284,7 @@ function CommentItem(props: any) {
  */
 function Reply(props: any) {
 
-    const {replyList, replyCount, floor} = props;
+    const {replyList, replyCount, floor, refresh, discussPostId, commentId} = props;
     let replyFloor = 1;
 
     /**
@@ -265,6 +307,9 @@ function Reply(props: any) {
                                    likeStatus={item.likeStatus}
                                    reply={item.reply}
                                    floorId={floor + '' + replyFloor++}
+                                   refresh={refresh}
+                                   discussPostId={discussPostId}
+                                   commentId={commentId}
                         />
                     )
                 })
@@ -278,7 +323,42 @@ function Reply(props: any) {
  */
 function ReplyItem(props: any) {
 
-    const {user, target, likeCount, likeStatus, reply, floorId} = props;
+    const {user, target, likeCount, likeStatus, reply, floorId, refresh, discussPostId, commentId} = props;
+
+    const [reply2, setReply2] = useState<string>('');// 回复具体的人对评论的回复
+    let replyRef = useRef<HTMLInputElement>(null);
+
+    const saveReply = (e: any) => {
+        setReply2(e.target.value);
+    }
+
+    const handleSubmit = () => {
+        axios.post(`http://localhost:8079/community/comment/add/${discussPostId}`, {
+            userId: cookie.get('userId'),
+            entityType: 2,
+            entityId: commentId,
+            content: reply2,
+            targetId: user?.id
+        }, {
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            withCredentials: true
+        }).then(
+            response => {
+                const code = response.data.code;
+                if (code === 200 && replyRef.current) {
+                    replyRef.current.value = '';
+                    setReply2('');
+                    alert('回复某人的回复成功');
+                    refresh();
+                }
+            },
+            error => {
+                console.log('请求失败', error);
+            }
+        )
+    }
 
     const fun = (obj: any) => {
         if (obj !== null) return (
@@ -320,8 +400,10 @@ function ReplyItem(props: any) {
                         placeholder={`回复${user.username}`}
                         aria-label="Recipient's username"
                         aria-describedby="basic-addon2"
+                        onChange={saveReply}
+                        ref={replyRef}
                     />
-                    <Button variant="outline-secondary" id="button-addon2">
+                    <Button variant="outline-secondary" id="button-addon2" onClick={handleSubmit}>
                         回复
                     </Button>
                 </InputGroup>
