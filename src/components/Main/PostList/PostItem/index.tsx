@@ -11,7 +11,7 @@ function PostItem(props: any) {
                         <h5 className="mb-1" style={{color: "#2d3436"}}>{post.title}</h5>
                     </div>
                     <small className="text-muted">
-                        <i className="bi bi-calendar4-event"></i>&nbsp;&nbsp;{moment(post && post.createTime).format("YYYY-MM-DD HH:MM")}
+                        <i className="bi bi-calendar4-event"></i>&nbsp;&nbsp;{moment(post && post.createTime).format("YYYY-MM-DD HH:mm")}
                     </small>
                 </div>
                 <small className="text-muted text-truncate d-block">

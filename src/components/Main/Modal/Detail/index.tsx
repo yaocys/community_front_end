@@ -62,7 +62,8 @@ function Detail(props: any) {
                 if (code === 200 && commentRef.current) {
                     commentRef.current.value = '';
                     setComment('');
-                    alert('回帖成功')
+                    alert('回帖成功');
+                    sendRequestCurring(currentPage);
                 }
             },
             error => {
@@ -104,7 +105,7 @@ function Detail(props: any) {
                         </h2>
                     </Modal.Title>
                     <small className="text-muted">
-                        <i className="bi bi-calendar4-event"></i>&nbsp;&nbsp;{moment(postDetail && postDetail.post.createTime).format("YYYY-MM-DD HH:MM")}
+                        <i className="bi bi-calendar4-event"></i>&nbsp;&nbsp;{moment(postDetail && postDetail.post.createTime).format("YYYY-MM-DD HH:mm")}
                     </small>
                     <div className="mt-3">
                         {postDetail && postDetail.post.content}
@@ -130,7 +131,7 @@ function Detail(props: any) {
                 <Form className="w-100">
                     <FormGroup>
                         <FormControl type="text" id="comment" placeholder="评论千万条，友善第一条"
-                                     onChange={saveComment} ref={commentRef}/>
+                                     onChange={saveComment} autoComplete="off" ref={commentRef}/>
                     </FormGroup>
                 </Form>
                 <div className="d-flex justify-content-between w-100 align-items-center">
@@ -201,7 +202,7 @@ function CommentItem(props: any) {
                     </div>
                     <div className="mt-3 text-muted d-flex justify-content-between">
                                 <span className="text-muted" style={{fontSize: "small"}}>
-                                    发布于 <b>{moment(comment.createTime).format("YYYY-MM-DD HH:MM")}</b>
+                                    发布于 <b>{moment(comment.createTime).format("YYYY-MM-DD HH:mm")}</b>
                                 </span>
                         <ul className="d-inline float-right" style={{fontSize: "small"}}>
                             <li className="d-inline ml-2">
@@ -300,7 +301,7 @@ function ReplyItem(props: any) {
                 <span>{reply.content}</span>
             </div>
             <div className="mt-3 d-flex justify-content-between">
-                <span>{moment(reply.createTime).format("YYYY-MM-DD HH:MM")}</span>
+                <span>{moment(reply.createTime).format("YYYY-MM-DD HH:mm")}</span>
                 <ul className="d-inline float-right">
                     <li className="d-inline ml-2">
                         <a href="#" className="text-primary">
