@@ -1,12 +1,13 @@
 import React from "react";
 import Carousel from "../Carousel";
+import {Card, ListGroup} from "react-bootstrap";
+import {Link} from "react-router-dom";
 
 function SideBar() {
     return (
-        <div className="col-3" id="side-bar">
-
-            <div className="card" style={{marginTop: "1em"}}>
-                <div className="card-body">
+        <div className="col-3" id="side-bar" style={{minWidth: "260px"}}>
+            <Card className="mt-2">
+                <Card.Body>
                     <div style={{marginBottom: "0.5em"}} className="d-flex align-items-center card-title">
                         <a href="" style={{marginRight: "0.5em"}}>
                             <img src="http://images.nowcoder.com/head/1t.png"
@@ -25,12 +26,34 @@ function SideBar() {
                             </div>
                         </div>
                     </div>
-                    <p className="card-text">这里展示一些用户信息，比如用户的等级和经验，用户的帖子数量、粉丝数量等</p>
-                    <a href="#" className="card-link">签到</a>
-                    <a href="#" className="card-link">个人主页</a>
-                    <a href="#" className="card-link">我的收藏</a>
-                </div>
-            </div>
+                    <div className="row container m-0 pt-3 text-center" style={{paddingLeft: 0, paddingRight: 0}}>
+                        <div className="col-3 p-0">
+                            <div className="w-100 mb-2 fs-5 text-muted">7</div>
+                            关注
+                        </div>
+                        <div className="col-3 p-0">
+                            <div className="w-100 mb-2 fs-5 text-muted">4</div>
+                            粉丝
+                        </div>
+                        <div className="col-3 p-0">
+                            <div className="w-100 mb-2 fs-5 text-muted">251</div>
+                            收藏
+                        </div>
+                        <div className="col-3 p-0">
+                            <div className="w-100 mb-2 fs-5 text-muted">14</div>
+                            获赞
+                        </div>
+                    </div>
+                </Card.Body>
+                <ListGroup className="list-group-flush">
+                    <ListGroup.Item className="d-flex d-flex justify-content-between align-items-center">
+                        <Card.Link href="#"><i className="bi bi-calendar-check"></i>&nbsp;签到</Card.Link>
+                        <Link to="/user">
+                            <i className="bi bi-person-lines-fill"></i>&nbsp;个人主页
+                        </Link>
+                    </ListGroup.Item>
+                </ListGroup>
+            </Card>
 
             <Carousel/>
             <HotList/>

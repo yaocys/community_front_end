@@ -12,6 +12,10 @@ function PostList(props: any) {
         hasPreviousPage, hasNextPage, prePage, nextPage, pages, publishOpen
     } = props;
 
+    useEffect(() => {
+        sendRequest(1);
+    }, []);
+
     const ifLoginShow = () => {
         if (ticket !== undefined) {
             return (

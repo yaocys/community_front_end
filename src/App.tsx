@@ -9,6 +9,14 @@ import Register from "./components/Main/Modal/Register";
 import {Cookies} from "react-cookie";
 import Publish from "./components/Main/Modal/Publish";
 import Detail from "./components/Main/Modal/Detail";
+import {Routes, Route, Navigate} from "react-router-dom";
+import Message from "./components/Main/Message";
+import PersonalCenter from "./components/PersonalCenter";
+import Like from "./components/Main/Message/Like";
+import Follower from "./components/Main/Message/Follower";
+import Comment from "./components/Main/Message/Comment";
+import Notice from "./components/Main/Message/Notice";
+import Letter from "./components/Main/Message/Letter";
 
 interface mainRef {
     refresh: () => void;
@@ -158,10 +166,27 @@ function App(props: any) {
     }
 
     return (
-        <>
+        <div>
             <NavBar registerOpen={registerOpen} loginOpen={loginOpen} ticket={ticket} setTicket={setTicket}/>
-
-            <Main ticket={ticket} detailOpen={detailOpen} ref={mainRef} publishOpen={publishOpen}/>
+            <Routes>
+                <Route path="/index" element={
+                    <>
+                        <Main ticket={ticket} detailOpen={detailOpen} ref={mainRef} publishOpen={publishOpen}/>
+                        <Footer/>
+                    </>
+                }/>
+                <Route path="/message" element={<Message/>}>
+                    {/*默认路由*/}
+                    <Route index element={<Notice/>}/>
+                    <Route path="like" element={<Like/>}/>
+                    <Route path="follower" element={<Follower/>}/>
+                    <Route path="comment" element={<Comment/>}/>
+                    <Route path="notice" element={<Notice/>}/>
+                    <Route path="letter" element={<Letter/>}/>
+                </Route>
+                <Route path="/user" element={<PersonalCenter/>}/>
+                <Route path="/" element={<Navigate to="/index"/>}/>
+            </Routes>
 
             <Login captcha={captcha} getCaptcha={getCaptcha}
                    loginShow={loginShow} loginClose={loginClose}
@@ -185,9 +210,7 @@ function App(props: any) {
                     nextPage={nextPage}
                     pages={pages}
             />
-
-            <Footer/>
-        </>
+        </div>
     );
 }
 

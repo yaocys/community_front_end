@@ -67,12 +67,10 @@ function Publish(props: any) {
                             placeholder="起个标题吧"
                             autoFocus
                             onChange={saveFormData('title')}
+                            autoComplete="off"
                         />
                     </Form.Group>
-                    <Form.Group
-                        className="mb-3"
-                        controlId="exampleForm.ControlTextarea1"
-                    >
+                    <Form.Group controlId="exampleForm.ControlTextarea1">
                         <Form.Control as="textarea" rows={15}
                                       placeholder="此刻你想与大家分享什么…"
                                       onChange={saveFormData('content')}/>
@@ -80,10 +78,10 @@ function Publish(props: any) {
                 </Form>
             </Modal.Body>
             <Modal.Footer>
-                <Button variant="secondary" onClick={publishClose}>
+                <Button variant="secondary" onClick={publishClose} size="sm">
                     取消
                 </Button>
-                <Button variant="primary" onClick={handleSubmit}>
+                <Button variant="primary" onClick={handleSubmit} size="sm">
                     发布
                 </Button>
             </Modal.Footer>

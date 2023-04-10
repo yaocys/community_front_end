@@ -1,8 +1,9 @@
-import React from "react";
+import React, {useState} from "react";
 import './index.css';
 import axios from "axios";
 import {Cookies} from "react-cookie";
-import {Button, Dropdown, Nav, NavDropdown} from "react-bootstrap";
+import {Button, Dropdown, Nav, NavDropdown, Form, InputGroup} from "react-bootstrap";
+import {Link, NavLink, useNavigate} from "react-router-dom";
 
 /**
  * 顶部导航栏组件
@@ -11,6 +12,10 @@ function NavBar(props: any) {
 
     const {registerOpen, loginOpen, ticket, setTicket} = props;
     const cookie = new Cookies();
+
+    const [search, setSearch] = useState<string>("");
+    const navigate = useNavigate();
+
     const logout = () => {
         axios.get('http://localhost:8079/community/logout', {
             withCredentials: true
@@ -31,6 +36,14 @@ function NavBar(props: any) {
                 console.log('请求失败', error);
             }
         )
+    }
+
+    const saveSearchInput = (e: any) => {
+        setSearch(e.target.value);
+    }
+
+    const handleSearch = () => {
+        if (search !== '') navigate(`/search?keyword=${search}`);
     }
 
     /**
@@ -56,7 +69,7 @@ function NavBar(props: any) {
             return (
                 <>
                     <li className="nav-item">
-                        <a className="nav-link" href="#">消息</a>
+                        <NavLink to="/message" className="nav-link">消息</NavLink>
                     </li>
 
                     <Nav>
@@ -68,7 +81,9 @@ function NavBar(props: any) {
                                 账号设置
                             </NavDropdown.Item>
                             <NavDropdown.Item>
-                                个人中心
+                                <Link to="/user">
+                                    个人中心
+                                </Link>
                             </NavDropdown.Item>
                             <NavDropdown.Divider/>
                             <NavDropdown.Item onClick={logout}>
@@ -85,10 +100,10 @@ function NavBar(props: any) {
         <nav className="navbar navbar-expand-lg bg-light sticky-top bg-body-tertiary" id="navbar">
             <div className="container-md">
 
-                <a className="navbar-brand" href="#">
+                <NavLink to="/index" className="navbar-brand">
                     <img src="/icon/nav.png" alt="Band" width={88} height={30}
                          className="d-inline-block align-top"/>
-                </a>
+                </NavLink>
 
                 <button className="navbar-toggler" type="button" data-bs-toggle="collapse"
                         data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent"
@@ -99,7 +114,7 @@ function NavBar(props: any) {
                 <div className="collapse navbar-collapse" id="navbarSupportedContent">
                     <ul className="navbar-nav me-auto mb-2 mb-lg-0">
                         <li className="nav-item">
-                            <a className="nav-link active" aria-current="page" href="#">首页</a>
+                            <NavLink to="/index" className="nav-link">首页</NavLink>
                         </li>
 
                         {
@@ -111,12 +126,13 @@ function NavBar(props: any) {
                                aria-disabled="true">管理员后台</a>
                         </li>
                     </ul>
-                    <form className="d-flex">
-                        <input className="form-control me-2" type="search" placeholder="查找讨论贴/文章"
-                               aria-label="Search"/>
-                        <button className="btn btn-sm btn-outline-dark" type="submit" style={{width: '4em'}}>搜索
-                        </button>
-                    </form>
+                    <Form className="d-flex">
+                        <InputGroup>
+                            <Form.Control placeholder="Search for … ?" aria-label="Search Input"
+                                          aria-describedby="basic-addon2" onChange={saveSearchInput}/>
+                            <Button variant="outline-secondary" onClick={handleSearch}>搜索</Button>
+                        </InputGroup>
+                    </Form>
                 </div>
             </div>
         </nav>
