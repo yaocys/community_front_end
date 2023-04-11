@@ -31,6 +31,11 @@ function Detail(props: any) {
 
     const [comment, setComment] = useState<string>("");// 回复楼主的内容
 
+    const [likeCount, setLikeCount] = useState(postDetail && postDetail.likeCount);
+    const [collectCount, setCollectCount] = useState(4);
+    const [likeStatus, setLikeStatus] = useState(postDetail && postDetail.likeStatus ? 'bi-hand-thumbs-up-fill' : 'bi-hand-thumbs-up');
+    const [collectStatus, setCollectStatus] = useState('bi-star');
+
     let commentRef = useRef<HTMLInputElement>(null);
 
     // 柯里化，对函数再封一层
@@ -71,6 +76,48 @@ function Detail(props: any) {
                 console.log('请求失败', error);
             }
         )
+    }
+
+    const handleLike = () => {
+        if (likeStatus === 'bi-hand-thumbs-up') {
+            setLikeStatus('bi-hand-thumbs-up-fill');
+            setLikeCount(likeCount + 1);
+        } else {
+            setLikeStatus('bi-hand-thumbs-up');
+            setLikeCount(likeCount - 1);
+        }
+        axios.post('http://localhost:8079/community/like', {
+            entityType: 1,
+            entityId: postDetail.id,
+            entityAuthorId: postDetail.userId,
+            postId: postDetail.id
+        }, {
+            headers: {
+                "Content-Type": 'application/x-www-form-urlencoded'
+            },
+            withCredentials: true
+        }).then(
+            response => {
+                // 检查返回状态码
+                const code = response.data.code;
+                if (code === 200) {
+                    // 不需要任何操作
+                }
+            },
+            error => {
+                console.log('请求失败', error);
+            }
+        )
+    }
+
+    const handleCollect = () => {
+        if (collectStatus === 'bi-star') {
+            setCollectStatus('bi-star-fill');
+            setCollectCount(collectCount + 1);
+        } else {
+            setCollectStatus('bi-star');
+            setCollectCount(collectCount - 1);
+        }
     }
 
     return (
@@ -138,10 +185,15 @@ function Detail(props: any) {
                 </Form>
                 <div className="d-flex justify-content-between w-100 align-items-center">
                     <div id="icons2">
-                        <a href=""><i className="bi bi-hand-thumbs-up"> {postDetail && postDetail.likeCount} </i></a>
-                        <a href=""><i className="bi bi-chat-dots"> {postDetail && postDetail.post.commentCount} </i></a>
-                        <a href=""><i className="bi bi-star"> 4 </i></a>
-                        <a href=""><i className="bi bi-share"/></a>
+                        <i className={`bi ${likeStatus}`} onClick={handleLike}>
+                            &nbsp;{likeCount}
+                        </i>
+                        <i className="bi bi-chat-dots"> {postDetail && postDetail.post.commentCount} </i>
+                        <i className="bi bi-star"> 4 </i>
+                        <i className={`bi ${collectStatus}`} onClick={handleCollect}>
+                            &nbsp;{collectCount}
+                        </i>
+                        <i className="bi bi-share"/>
                     </div>
                     <Button type="submit" size="sm" onClick={() => handleSubmit(postDetail.post.id)}>回帖</Button>
                 </div>

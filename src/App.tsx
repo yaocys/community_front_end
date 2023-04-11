@@ -116,7 +116,7 @@ function App(props: any) {
                 console.log('请求失败', error);
             }
         )
-        window.scrollTo(0, 0);
+        // window.scrollTo(0, 0);
     }
 
     /**
@@ -128,9 +128,12 @@ function App(props: any) {
         setDetailShow(true);
         axios.get(`http://localhost:8079/community/post/detail/${discussPostId}`).then(
             response => {
-                // 获取到帖子详情数据
-                setPostDetail(response.data.data);
-                sendRequest(1, response.data.data.post.id);
+                const code = response.data.code;
+                if (code === 200) {
+                    // 获取到帖子详情数据
+                    setPostDetail(response.data.data);
+                    sendRequest(1, response.data.data.post.id);
+                }
             },
             error => {
                 console.log('请求失败', error);
@@ -171,7 +174,8 @@ function App(props: any) {
             <Routes>
                 <Route path="/index" element={
                     <>
-                        <Main ticket={ticket} detailOpen={detailOpen} ref={mainRef} publishOpen={publishOpen}/>
+                        <Main ticket={ticket} detailOpen={detailOpen} ref={mainRef} publishOpen={publishOpen}
+                              registerOpen={registerOpen} loginOpen={loginOpen}/>
                         <Footer/>
                     </>
                 }/>

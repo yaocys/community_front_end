@@ -1,0 +1,7 @@
+.tag {
+    line-height: 1.5;
+    font-weight: bolder;
+    color: #2d3436;
+    user-select: none;
+    margin-right: 0.5em;
+}

@@ -8,11 +8,14 @@ import axios from "axios";
 import Search from "./Search";
 import Message from "./Message";
 import PersonalCenter from "../PersonalCenter";
+import Login from "./Modal/Login";
 
 interface MainProps {
     ticket: string,
     detailOpen: (discussPostId: string) => void;
     publishOpen: () => void;
+    registerOpen: () => void;
+    loginOpen: () => void;
 }
 
 interface mainRef {
@@ -21,7 +24,7 @@ interface mainRef {
 
 const Main = forwardRef<mainRef, MainProps>((props, ref) => {
 
-    const {ticket, detailOpen, publishOpen} = props;
+    const {ticket, detailOpen, publishOpen, registerOpen, loginOpen} = props;
 
     const [postList, setPostList] = useState<any[]>([]);
     const [navigatePages, setNavigatePages] = useState<any[]>([]);
@@ -63,7 +66,7 @@ const Main = forwardRef<mainRef, MainProps>((props, ref) => {
                 console.log('请求失败', error);
             }
         )
-        window.scrollTo(0, 0);
+        // window.scrollTo(0, 0);
     }
 
     useImperativeHandle(ref, () => ({
@@ -98,7 +101,7 @@ const Main = forwardRef<mainRef, MainProps>((props, ref) => {
                 console.log('请求失败', error);
             }
         )
-        window.scrollTo(0, 0);
+        // window.scrollTo(0, 0);
     }
 
     return (
@@ -118,10 +121,10 @@ const Main = forwardRef<mainRef, MainProps>((props, ref) => {
                           nextPage={nextPage}
                           pages={pages}
                 />
-                <SideBar/>
+                <SideBar ticket={ticket} registerOpen={registerOpen} loginOpen={loginOpen}/>
             </>
 
-            <Route path="/search" element={
+            {/*            <Route path="/search" element={
                 <>
                     <Search detailOpen={detailOpen}
                             postList={postList}
@@ -137,7 +140,7 @@ const Main = forwardRef<mainRef, MainProps>((props, ref) => {
                             pages={pages}/>
                     <SideBar/>
                 </>
-            }/>
+            }/>*/}
 
         </div>
     )

@@ -2,7 +2,7 @@ import React, {useState} from "react";
 import './index.css';
 import axios from "axios";
 import {Cookies} from "react-cookie";
-import {Button, Dropdown, Nav, NavDropdown, Form, InputGroup} from "react-bootstrap";
+import {Button, Dropdown, Nav, NavDropdown, Form, InputGroup, Image} from "react-bootstrap";
 import {Link, NavLink, useNavigate} from "react-router-dom";
 
 /**
@@ -73,9 +73,16 @@ function NavBar(props: any) {
                     </li>
 
                     <Nav>
-                        <NavDropdown id="personal-center" title="个人中心">
+                        <NavDropdown id="personal-center" title={
+                            <Image src={cookie.get("headerUrl")} roundedCircle={true}
+                                   style={{
+                                       height: "30px", position: "absolute", top: "50%", left: "50%",
+                                       transform: "translate(-50%,-50%)", marginLeft: "2rem"
+                                   }}/>
+
+                        }>
                             <Dropdown.Header className="user-select-none">
-                                用户名
+                                {cookie.get("username")}
                             </Dropdown.Header>
                             <NavDropdown.Item href="#action/3.1">
                                 账号设置
@@ -121,10 +128,10 @@ function NavBar(props: any) {
                             ifLoginShow()
                         }
 
-                        <li className="nav-item">
+                        {/*                        <li className="nav-item">
                             <a className="nav-link disabled" href="#" tabIndex={-1}
                                aria-disabled="true">管理员后台</a>
-                        </li>
+                        </li>*/}
                     </ul>
                     <Form className="d-flex">
                         <InputGroup>

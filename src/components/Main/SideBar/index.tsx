@@ -1,23 +1,44 @@
 import React from "react";
 import Carousel from "../Carousel";
-import {Card, ListGroup} from "react-bootstrap";
+import {Button, Card, ListGroup} from "react-bootstrap";
 import {Link} from "react-router-dom";
+import {Cookies} from "react-cookie";
 
-function SideBar() {
-    return (
-        <div className="col-3" id="side-bar" style={{minWidth: "260px"}}>
+const SideBar = (props: any) => {
+    const cookie = new Cookies();
+    const {ticket, registerOpen, loginOpen} = props;
+
+    const ifLoginShow = () => {
+        if (ticket === undefined) {
+            return (
+                <Card className="mt-2">
+                    <Card.Header>
+                        <Card.Title>
+                            岸途——你我的上岸之路
+                        </Card.Title>
+                        <Card.Text>
+                            考研资讯交流
+                        </Card.Text>
+                    </Card.Header>
+                    <Card.Body className="d-flex justify-content-around align-items-center">
+                        <Button variant="outline-primary" onClick={loginOpen}>现在登录</Button>
+                        <Button variant="outline-success" onClick={registerOpen}>马上注册</Button>
+                    </Card.Body>
+                </Card>
+            )
+        } else return (
             <Card className="mt-2">
                 <Card.Body>
                     <div style={{marginBottom: "0.5em"}} className="d-flex align-items-center card-title">
                         <a href="" style={{marginRight: "0.5em"}}>
-                            <img src="http://images.nowcoder.com/head/1t.png"
+                            <img src={cookie.get("headerUrl")}
                                  className="mr-4 rounded-circle user-header" alt="用户头像" height="40px"/>
                         </a>
                         <div className="d-inline-block align-items-center">
                             <div>
                                 <a href="">
                                     <span id="username" style={{marginRight: "0.5em"}}
-                                          className="text-muted d-block">捞捞张同学吧</span>
+                                          className="text-muted d-block">{cookie.get("username")}</span>
                                     <small className="badge rounded-pill bg-success-subtle fw-medium"
                                            style={{fontSize: "x-small"}}>
                                         <i className="bi bi-1-circle"></i> 初出茅庐
@@ -54,6 +75,14 @@ function SideBar() {
                     </ListGroup.Item>
                 </ListGroup>
             </Card>
+        )
+    }
+    return (
+        <div className="col-3" id="side-bar" style={{minWidth: "260px"}}>
+
+            {
+                ifLoginShow()
+            }
 
             <Carousel/>
             <HotList/>
@@ -81,5 +110,6 @@ function HotList() {
         </div>
     )
 }
+
 
 export default SideBar;

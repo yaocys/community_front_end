@@ -2,16 +2,15 @@
 
 }
 
-#icons > a > i {
-    margin-left: 2em;
-}
-
-#icons > a {
+#icons > i {
     color: #575a5e;
+    margin-left: 2rem;
+    cursor: pointer;
+    user-select: none;
 }
 
-#icons > a:hover {
-    color: #0a58ca;
+#icons > i:hover {
+    color: #00cec9;
 }
 
 #myTabContent {

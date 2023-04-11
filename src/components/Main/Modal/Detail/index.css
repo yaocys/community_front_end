@@ -2,16 +2,15 @@
     --bs-modal-width: 60%;
 }
 
-#icons2 > a > i {
-    margin-right: 2em;
-}
-
-#icons2 > a {
+#icons2 > i {
     color: #575a5e;
+    margin-right: 2rem;
+    cursor: pointer;
+    user-select: none;
 }
 
 #icons2 > a:hover {
-    color: #0a58ca;
+    color: #00cec9;
 }
 
 .content {
