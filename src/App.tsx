@@ -126,10 +126,13 @@ function App(props: any) {
      */
     const detailOpen = (discussPostId: string) => {
         setDetailShow(true);
-        axios.get(`http://localhost:8079/community/post/detail/${discussPostId}`).then(
+        axios.get(`http://localhost:8079/community/post/detail/${discussPostId}`, {
+            withCredentials: true
+        }).then(
             response => {
                 const code = response.data.code;
                 if (code === 200) {
+                    console.log(response.data)
                     // 获取到帖子详情数据
                     setPostDetail(response.data.data);
                     sendRequest(1, response.data.data.post.id);

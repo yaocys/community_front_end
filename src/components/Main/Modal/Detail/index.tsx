@@ -1,4 +1,4 @@
-import React, {useRef, useState} from "react";
+import React, {useEffect, useRef, useState} from "react";
 import {Button, Form, FormControl, FormGroup, Modal, InputGroup} from "react-bootstrap";
 import './index.css';
 import moment from "moment/moment";
@@ -22,6 +22,9 @@ function CustomToggle({children, eventKey}: { children: any, eventKey: any }) {
 
 const cookie = new Cookies();
 
+/**
+ * 父组件传递过来的postDetail因为异步请求的关系，所以可能为空
+ */
 function Detail(props: any) {
 
     const {
@@ -31,10 +34,23 @@ function Detail(props: any) {
 
     const [comment, setComment] = useState<string>("");// 回复楼主的内容
 
-    const [likeCount, setLikeCount] = useState(postDetail && postDetail.likeCount);
+    const [likeCount, setLikeCount] = useState(0);
     const [collectCount, setCollectCount] = useState(4);
-    const [likeStatus, setLikeStatus] = useState(postDetail && postDetail.likeStatus ? 'bi-hand-thumbs-up-fill' : 'bi-hand-thumbs-up');
+    const [likeStatus, setLikeStatus] = useState('bi-hand-thumbs-up');
     const [collectStatus, setCollectStatus] = useState('bi-star');
+
+    /**
+     * 监听父组件给的值的状态，并在更新后同步更新子组件获得的数据
+     */
+    useEffect(() => {
+        if (postDetail) {
+            console.log('执行')
+            console.log(postDetail.likeCount)
+            console.log(postDetail.likeStatus)
+            setLikeCount(postDetail.likeCount);
+            setLikeStatus(postDetail.likeStatus ? 'bi-hand-thumbs-up-fill' : 'bi-hand-thumbs-up');
+        }
+    }, [postDetail])
 
     let commentRef = useRef<HTMLInputElement>(null);
 
