@@ -5,8 +5,9 @@ import moment from "moment/moment";
 import Accordion from 'react-bootstrap/Accordion';
 import {useAccordionButton} from 'react-bootstrap/AccordionButton';
 import Pagination from "../../Pagination";
-import axios from "axios";
+import axios from "../../../../util/axios";
 import {Cookies} from "react-cookie";
+import {handleLike} from "../../../../util/utils";
 
 /**
  * 回复框的触发器
@@ -44,9 +45,6 @@ function Detail(props: any) {
      */
     useEffect(() => {
         if (postDetail) {
-            console.log('执行')
-            console.log(postDetail.likeCount)
-            console.log(postDetail.likeStatus)
             setLikeCount(postDetail.likeCount);
             setLikeStatus(postDetail.likeStatus ? 'bi-hand-thumbs-up-fill' : 'bi-hand-thumbs-up');
         }
@@ -68,7 +66,7 @@ function Detail(props: any) {
     }
 
     const handleSubmit = (discussPostId: string) => {
-        axios.post(`http://localhost:8079/community/comment/add/${discussPostId}`, {
+        axios.post(`/comment/add/${discussPostId}`, {
             userId: cookie.get('userId'),
             entityType: 1,
             entityId: discussPostId,
@@ -76,52 +74,15 @@ function Detail(props: any) {
         }, {
             headers: {
                 'Content-Type': 'application/json'
-            },
-            withCredentials: true
+            }
         }).then(
-            response => {
-                const code = response.data.code;
-                if (code === 200 && commentRef.current) {
+            () => {
+                if (commentRef.current) {
                     commentRef.current.value = '';
                     setComment('');
                     alert('回帖成功');
                     refresh();
                 }
-            },
-            error => {
-                console.log('请求失败', error);
-            }
-        )
-    }
-
-    const handleLike = () => {
-        if (likeStatus === 'bi-hand-thumbs-up') {
-            setLikeStatus('bi-hand-thumbs-up-fill');
-            setLikeCount(likeCount + 1);
-        } else {
-            setLikeStatus('bi-hand-thumbs-up');
-            setLikeCount(likeCount - 1);
-        }
-        axios.post('http://localhost:8079/community/like', {
-            entityType: 1,
-            entityId: postDetail.id,
-            entityAuthorId: postDetail.userId,
-            postId: postDetail.id
-        }, {
-            headers: {
-                "Content-Type": 'application/x-www-form-urlencoded'
-            },
-            withCredentials: true
-        }).then(
-            response => {
-                // 检查返回状态码
-                const code = response.data.code;
-                if (code === 200) {
-                    // 不需要任何操作
-                }
-            },
-            error => {
-                console.log('请求失败', error);
             }
         )
     }
@@ -201,7 +162,8 @@ function Detail(props: any) {
                 </Form>
                 <div className="d-flex justify-content-between w-100 align-items-center">
                     <div id="icons2">
-                        <i className={`bi ${likeStatus}`} onClick={handleLike}>
+                        <i className={`bi ${likeStatus}`}
+                           onClick={() => handleLike(likeStatus, setLikeStatus, likeCount, setLikeCount, 1, postDetail.id, postDetail.userId, postDetail.id)}>
                             &nbsp;{likeCount}
                         </i>
                         <i className="bi bi-chat-dots"> {postDetail && postDetail.post.commentCount} </i>
@@ -211,7 +173,10 @@ function Detail(props: any) {
                         </i>
                         <i className="bi bi-share"/>
                     </div>
-                    <Button type="submit" size="sm" onClick={() => handleSubmit(postDetail.post.id)}>回帖</Button>
+                    <Button type="submit" size="sm"
+                            onClick={() => handleSubmit(postDetail.post.id,)}>
+                        回帖
+                    </Button>
                 </div>
             </Modal.Footer>
         </Modal>
@@ -256,6 +221,14 @@ function CommentItem(props: any) {
 
     const {user, comment, likeStatus, likeCount, replyCount, replyList, floor, refresh, discussPostId} = props;
 
+    /*
+
+    这个数据来自父组件，比如点赞，图标的变化和+1-1不需要对应后台真实数据，都只是前端效果罢了
+    * */
+
+    const [likeStatus2, setLikeStatus] = useState(likeStatus ? 'bi-hand-thumbs-up-fill' : 'bi-hand-thumbs-up');
+    const [likeCount2, setLikeCount] = useState(likeCount);
+
     const [reply, setReply] = useState<string>('');// 回复评论
     let replyRef = useRef<HTMLInputElement>(null);
 
@@ -264,7 +237,7 @@ function CommentItem(props: any) {
     }
 
     const handleSubmit = () => {
-        axios.post(`http://localhost:8079/community/comment/add/${discussPostId}`, {
+        axios.post(`/comment/add/${discussPostId}`, {
             userId: cookie.get('userId'),
             entityType: 2,
             entityId: comment.id,
@@ -272,20 +245,15 @@ function CommentItem(props: any) {
         }, {
             headers: {
                 'Content-Type': 'application/json'
-            },
-            withCredentials: true
+            }
         }).then(
-            response => {
-                const code = response.data.code;
-                if (code === 200 && replyRef.current) {
+            () => {
+                if (replyRef.current) {
                     replyRef.current.value = '';
                     setReply('');
                     alert('回复成功');
                     refresh();
                 }
-            },
-            error => {
-                console.log('请求失败', error);
             }
         )
     }
@@ -312,9 +280,10 @@ function CommentItem(props: any) {
                                 </span>
                         <ul className="d-inline float-right" style={{fontSize: "small"}}>
                             <li className="d-inline ml-2">
-                                <a href="#" className="text-primary">
-                                    <i className="bi bi-hand-thumbs-up"> {likeCount} </i>
-                                </a>
+                                <i className={`text-primary ${likeStatus2}`}
+                                   onClick={() => handleLike(likeStatus2, setLikeStatus, likeCount, setLikeCount, 2, comment.id, comment.userId, discussPostId)}>
+                                    &nbsp;{likeCount2}
+                                </i>
                             </li>
                             <li className="d-inline ml-2">
                                 <CustomToggle eventKey={floor}>
@@ -393,37 +362,35 @@ function ReplyItem(props: any) {
 
     const {user, target, likeCount, likeStatus, reply, floorId, refresh, discussPostId, commentId} = props;
 
-    const [reply2, setReply2] = useState<string>('');// 回复具体的人对评论的回复
+    const [likeStatus2, setLikeStatus] = useState(likeStatus ? 'bi-hand-thumbs-up-fill' : 'bi-hand-thumbs-up');
+    const [likeCount2, setLikeCount] = useState(likeCount);
+
+    const [replyInput, setReplyInput] = useState<string>('');// 回复具体的人对评论的回复
     let replyRef = useRef<HTMLInputElement>(null);
 
     const saveReply = (e: any) => {
-        setReply2(e.target.value);
+        setReplyInput(e.target.value);
     }
 
     const handleSubmit = () => {
-        axios.post(`http://localhost:8079/community/comment/add/${discussPostId}`, {
+        axios.post(`comment/add/${discussPostId}`, {
             userId: cookie.get('userId'),
             entityType: 2,
             entityId: commentId,
-            content: reply2,
+            content: replyInput,
             targetId: user?.id
         }, {
             headers: {
                 'Content-Type': 'application/json'
-            },
-            withCredentials: true
+            }
         }).then(
-            response => {
-                const code = response.data.code;
-                if (code === 200 && replyRef.current) {
+            () => {
+                if (replyRef.current) {
                     replyRef.current.value = '';
-                    setReply2('');
+                    setReplyInput('');
                     alert('回复某人的回复成功');
                     refresh();
                 }
-            },
-            error => {
-                console.log('请求失败', error);
             }
         )
     }
@@ -452,9 +419,10 @@ function ReplyItem(props: any) {
                 <span>{moment(reply.createTime).format("YYYY-MM-DD HH:mm")}</span>
                 <ul className="d-inline float-right">
                     <li className="d-inline ml-2">
-                        <a href="#" className="text-primary">
-                            <i className="bi bi-hand-thumbs-up"> {likeCount} </i>
-                        </a>
+                        <i className={`text-primary ${likeStatus2}`}
+                           onClick={() => handleLike(likeStatus2, setLikeStatus, likeCount, setLikeCount, 2, reply.id, reply.userId, discussPostId)}>
+                            &nbsp;{likeCount2}
+                        </i>
                     </li>
                     <CustomToggle eventKey={floorId}>
                         <i className="bi bi-chat-dots"></i>
