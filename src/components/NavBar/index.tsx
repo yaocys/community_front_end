@@ -1,6 +1,6 @@
 import React, {useState} from "react";
 import './index.css';
-import axios from "axios";
+import axios from "../../util/axios";
 import {Cookies} from "react-cookie";
 import {Button, Dropdown, Nav, NavDropdown, Form, InputGroup, Image} from "react-bootstrap";
 import {Link, NavLink, useNavigate} from "react-router-dom";
@@ -17,9 +17,7 @@ function NavBar(props: any) {
     const navigate = useNavigate();
 
     const logout = () => {
-        axios.get('http://localhost:8079/community/logout', {
-            withCredentials: true
-        }).then(
+        axios.get('/logout').then(
             response => {
                 /*
                 因为是异步请求，所以这里的清除cookie要放在里面，不然发请求的时候cookie就已经被清除了
@@ -29,11 +27,8 @@ function NavBar(props: any) {
                 cookie.remove('userId');
                 cookie.remove('username');
                 cookie.remove('headerUrl');
-                const code = response.data.code;
-                if (code === 200) alert("注销成功");
-            },
-            error => {
-                console.log('请求失败', error);
+                alert("注销成功");
+                window.location.reload();
             }
         )
     }

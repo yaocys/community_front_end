@@ -4,7 +4,7 @@ import Footer from "./components/Footer";
 import './App.css';
 import Login from "./components/Main/Modal/Login";
 import React, {useEffect, useRef, useState} from "react";
-import axios from "axios";
+import axios from "./util/axios";
 import Register from "./components/Main/Modal/Register";
 import {Cookies} from "react-cookie";
 import Publish from "./components/Main/Modal/Publish";
@@ -95,7 +95,7 @@ function App(props: any) {
      * 发送获取评论的请求
      */
     const sendRequest = (offset: number, discussPostId: string) => {
-        axios.get(`http://localhost:8079/community/comment/query/${discussPostId}`, {
+        axios.get(`/comment/query/${discussPostId}`, {
             params: {
                 offset: offset,
                 limit: 5
@@ -111,37 +111,21 @@ function App(props: any) {
                 setPrePage(response.data.data.prePage);
                 setNextPage(response.data.data.nextPage);
                 setPages(response.data.data.pages);
-            },
-            error => {
-                console.log('请求失败', error);
             }
         )
-        // window.scrollTo(0, 0);
     }
 
     /**
      * 获取帖子详情
-     * 难道有参数的调用都需要写成箭头函数？
-     * @param discussPostId
      */
     const detailOpen = (discussPostId: string) => {
         setDetailShow(true);
-        axios.get(`http://localhost:8079/community/post/detail/${discussPostId}`, {
-            withCredentials: true
-        }).then(
+        axios.get(`/post/detail/${discussPostId}`).then(
             response => {
-                const code = response.data.code;
-                if (code === 200) {
-                    console.log(response.data)
-                    // 获取到帖子详情数据
-                    setPostDetail(response.data.data);
-                    sendRequest(1, response.data.data.post.id);
-                }
-            },
-            error => {
-                console.log('请求失败', error);
+                setPostDetail(response.data.data);
+                sendRequest(1, response.data.data.post.id);
             }
-        );
+        )
     }
 
     const detailClose = () => {
@@ -154,9 +138,8 @@ function App(props: any) {
      * 获取验证码图片
      */
     const getCaptcha = () => {
-        axios.get('http://localhost:8079/community/captcha', {
+        axios.get('/captcha', {
             responseType: "blob",
-            withCredentials: true,
             headers: {
                 'X-Requested-With': 'XMLHttpRequest'
             }
@@ -164,9 +147,6 @@ function App(props: any) {
             response => {
                 let blob = new Blob([response.data], {type: response.data.type});
                 setCaptcha(URL.createObjectURL(blob));
-            },
-            error => {
-                console.log('请求失败', error);
             }
         )
     }
