@@ -1,5 +1,5 @@
 import React, {useState} from "react";
-import axios from "axios";
+import axios from "../../../../util/axios";
 import {Button, Modal, Form} from "react-bootstrap";
 
 /**
@@ -28,24 +28,17 @@ function Publish(props: any) {
     }
 
     const handleSubmit = () => {
-        axios.post('http://localhost:8079/community/post/add', {
+        axios.post('/post/add', {
             title: title,
             content: content
         }, {
             headers: {
                 "Content-Type": 'application/x-www-form-urlencoded'
-            },
-            withCredentials: true
+            }
         }).then(
-            response => {
-                const code = response.data.code;
-                if (code === 200) {
-                    alert("发布成功");
-                    publishClose();
-                }
-            },
-            error => {
-                console.log('请求失败', error);
+            () => {
+                alert("发布成功");
+                publishClose();
             }
         )
     }

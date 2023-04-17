@@ -10,8 +10,9 @@ function Pagination(props: any) {
     } = props;
 
     return (
-        <nav className={`mt-5 user-select-none ${totalLine > 0 ? '' : 'd-none'}`}>
-            {/*没有记录不显示分页组件*/}
+        <nav
+            className={`mt-5 user-select-none ${(currentPage === 1 && hasNextPage === false) || totalLine <= 0 ? 'd-none' : ''}`}>
+            {/*大于一页&&总行数>0才显示分页组件*/}
             <ul className="pagination justify-content-center">
 
                 <li className={`page-item ${hasPreviousPage ? '' : 'disabled'}`}>

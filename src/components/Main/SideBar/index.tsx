@@ -1,15 +1,15 @@
 import React from "react";
 import Carousel from "../Carousel";
 import {Button, Card, ListGroup} from "react-bootstrap";
-import {Link} from "react-router-dom";
-import {Cookies} from "react-cookie";
+import {Link, useNavigate} from "react-router-dom";
+import cookie, {handleSubmit} from "../../../util/utils";
 
 const SideBar = (props: any) => {
-    const cookie = new Cookies();
-    const {ticket, registerOpen, loginOpen} = props;
+    const {ticket, registerOpen, loginOpen, handleProfile} = props;
 
     const ifLoginShow = () => {
         if (ticket === undefined) {
+            // 没登陆的页面
             return (
                 <Card className="mt-2">
                     <Card.Header>
@@ -30,24 +30,23 @@ const SideBar = (props: any) => {
             <Card className="mt-2">
                 <Card.Body>
                     <div style={{marginBottom: "0.5em"}} className="d-flex align-items-center card-title">
-                        <a href="" style={{marginRight: "0.5em"}}>
-                            <img src={cookie.get("headerUrl")}
-                                 className="mr-4 rounded-circle user-header" alt="用户头像" height="40px"/>
-                        </a>
+                        <img src={cookie.get("headerUrl")} className="mr-4 rounded-circle user-header" alt="用户头像"
+                             height="40px" style={{marginRight: "0.5em", cursor: 'pointer'}}
+                             onClick={() => handleProfile(cookie.get('userId'))}/>
                         <div className="d-inline-block align-items-center">
                             <div>
-                                <a href="">
-                                    <span id="username" style={{marginRight: "0.5em"}}
-                                          className="text-muted d-block">{cookie.get("username")}</span>
-                                    <small className="badge rounded-pill bg-success-subtle fw-medium"
-                                           style={{fontSize: "x-small"}}>
-                                        <i className="bi bi-1-circle"></i> 初出茅庐
-                                    </small>
-                                </a>
+                                <Link id="username" style={{marginRight: "0.5em", cursor: 'pointer'}}
+                                      className="text-muted d-block"
+                                      to={`/user/${cookie.get('userId')}`}>{cookie.get("username")}</Link>
+                                <small className="badge rounded-pill bg-success-subtle fw-medium"
+                                       style={{fontSize: "x-small", cursor: 'pointer'}}>
+                                    <i className="bi bi-1-circle"></i> 初出茅庐
+                                </small>
                             </div>
                         </div>
                     </div>
-                    <div className="row container m-0 pt-3 text-center" style={{paddingLeft: 0, paddingRight: 0}}>
+                    <div className="row container m-0 pt-3 text-center user-select-none"
+                         style={{paddingLeft: 0, paddingRight: 0}}>
                         <div className="col-3 p-0">
                             <div className="w-100 mb-2 fs-5 text-muted">7</div>
                             关注
@@ -58,7 +57,7 @@ const SideBar = (props: any) => {
                         </div>
                         <div className="col-3 p-0">
                             <div className="w-100 mb-2 fs-5 text-muted">251</div>
-                            收藏
+                            访客
                         </div>
                         <div className="col-3 p-0">
                             <div className="w-100 mb-2 fs-5 text-muted">14</div>
@@ -69,7 +68,7 @@ const SideBar = (props: any) => {
                 <ListGroup className="list-group-flush">
                     <ListGroup.Item className="d-flex d-flex justify-content-between align-items-center">
                         <Card.Link href="#"><i className="bi bi-calendar-check"></i>&nbsp;签到</Card.Link>
-                        <Link to="/user">
+                        <Link to={`/user/${cookie.get('userId')}`}>
                             <i className="bi bi-person-lines-fill"></i>&nbsp;个人主页
                         </Link>
                     </ListGroup.Item>

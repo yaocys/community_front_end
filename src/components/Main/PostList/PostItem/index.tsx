@@ -1,49 +1,17 @@
 import React, {useState} from "react";
 import moment from 'moment';
-import axios from "axios";
+import {Link} from "react-router-dom";
+
+import {handleLike} from "../../../../util/utils";
 
 function PostItem(props: any) {
-    const {post, detailOpen} = props;
+
+    const {post, detailOpen, handleProfile} = props;
+
     const [likeCount, setLikeCount] = useState(post.likeCount);
     const [collectCount, setCollectCount] = useState(4);
     const [likeStatus, setLikeStatus] = useState(post.likeStatus ? 'bi-hand-thumbs-up-fill' : 'bi-hand-thumbs-up');
     const [collectStatus, setCollectStatus] = useState('bi-star');
-
-    /**
-     * 处理点击”点赞按钮“
-     * 立即变换并计数+1，但并不是真实的即时后端数据，而只是向后端发送了一个请求，后端何时处理看消息队列
-     */
-    const handleLike = () => {
-        if (likeStatus === 'bi-hand-thumbs-up') {
-            setLikeStatus('bi-hand-thumbs-up-fill');
-            setLikeCount(likeCount + 1);
-        } else {
-            setLikeStatus('bi-hand-thumbs-up');
-            setLikeCount(likeCount - 1);
-        }
-        axios.post('http://localhost:8079/community/like', {
-            entityType: 1,
-            entityId: post.id,
-            entityAuthorId: post.userId,
-            postId: post.id
-        }, {
-            headers: {
-                "Content-Type": 'application/x-www-form-urlencoded'
-            },
-            withCredentials: true
-        }).then(
-            response => {
-                // 检查返回状态码
-                const code = response.data.code;
-                if (code === 200) {
-                    // 不需要任何操作
-                }
-            },
-            error => {
-                console.log('请求失败', error);
-            }
-        )
-    }
 
     const handleCollect = () => {
         if (collectStatus === 'bi-star') {
@@ -72,25 +40,24 @@ function PostItem(props: any) {
             </div>
 
             <div className="d-flex justify-content-between align-items-center text-muted" style={{marginTop: "0.5em"}}>
-                <div style={{margin: "auto 0"}} className="d-flex justify-content-center align-items-center">
-                    <a href="" style={{marginRight: "0.5em"}}>
-                        <img src={post.headerUrl}
-                             className="mr-4 rounded-circle user-header" alt="用户头像" height="24px"/>
-                    </a>
+                <div style={{margin: "auto 0"}}
+                     className="d-flex justify-content-center align-items-center user-select-none">
+                    <img src={post.headerUrl} className="mr-4 rounded-circle user-header" alt="用户头像" height="24px"
+                         style={{cursor: 'pointer'}} onClick={() => handleProfile(post.userId)}/>
                     <div className="d-inline-block align-items-center">
-                        <a href="">
-                            <span id="username" style={{marginRight: "0.5em"}}
-                                  className="text-muted">{post.username}</span>
-                            <small className="badge rounded-pill bg-success-subtle fw-medium"
-                                   style={{fontSize: "x-small"}}>
-                                <i className="bi bi-1-circle"></i> 初出茅庐
-                            </small>
-                        </a>
+                        <Link id="username" style={{marginRight: "0.5em"}} className="text-muted"
+                              to={`/user/${post.userId}`}
+                        >&nbsp;&nbsp;{post.username}</Link>
+                        <small className="badge rounded-pill bg-success-subtle fw-medium"
+                               style={{fontSize: "x-small", cursor: 'pointer'}}>
+                            <i className="bi bi-1-circle"></i> 初出茅庐
+                        </small>
                     </div>
                 </div>
                 <div>
                     <small className="" id="icons">
-                        <i className={`bi ${likeStatus}`} onClick={handleLike}>
+                        <i className={`bi ${likeStatus}`}
+                           onClick={() => handleLike(likeStatus, setLikeStatus, likeCount, setLikeCount, 1, post.id, post.userId, post.id)}>
                             &nbsp;{likeCount}
                         </i>
                         <i className="bi bi-chat-dots"> {post.commentCount} </i>

@@ -1,8 +1,11 @@
 import axios from "./axios";
 import React from "react";
+import {Cookies} from "react-cookie";
+import {useNavigate} from "react-router-dom";
 
 /**
  * 用来处理点赞的通用函数
+ * 立即变换并计数+1，但并不是真实的即时后端数据，而只是向后端发送了一个请求，后端何时处理看消息队列
  * @param likeStatus
  * @param setLikeStatus
  * @param likeCount
@@ -45,6 +48,9 @@ export const handleLike = (
         }
     )
 }
+
+const cookie = new Cookies();
+export default cookie;
 
 export const handleSubmit = (
     discussPostId: string,

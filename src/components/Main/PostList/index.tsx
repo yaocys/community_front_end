@@ -7,14 +7,14 @@ import PostItem from "./PostItem";
 function PostList(props: any) {
 
     const {
-        ticket, detailOpen, postList, sendRequest,
+        ticket, detailOpen, postList, sendRequest, handleProfile,
         currentPage, totalLine, navigatePages,
         hasPreviousPage, hasNextPage, prePage, nextPage, pages, publishOpen
     } = props;
 
     useEffect(() => {
         sendRequest(1);
-    }, []);
+    }, [sendRequest]);
 
     const ifLoginShow = () => {
         if (ticket !== undefined) {
@@ -80,6 +80,8 @@ function PostList(props: any) {
                             }
                         </div>
                         <Pagination sendRequest={sendRequest}
+                                    handleProfile={handleProfile}
+
                                     currentPage={currentPage}
                                     totalLine={totalLine}
                                     navigatePages={navigatePages}

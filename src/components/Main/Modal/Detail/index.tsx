@@ -1,13 +1,16 @@
 import React, {useEffect, useRef, useState} from "react";
 import {Button, Form, FormControl, FormGroup, Modal, InputGroup} from "react-bootstrap";
-import './index.css';
 import moment from "moment/moment";
 import Accordion from 'react-bootstrap/Accordion';
 import {useAccordionButton} from 'react-bootstrap/AccordionButton';
+
 import Pagination from "../../Pagination";
-import axios from "../../../../util/axios";
-import {Cookies} from "react-cookie";
 import {handleLike} from "../../../../util/utils";
+
+import axios from "../../../../util/axios";
+import cookie from "../../../../util/utils";
+
+import './index.css';
 
 /**
  * 回复框的触发器
@@ -21,15 +24,13 @@ function CustomToggle({children, eventKey}: { children: any, eventKey: any }) {
     );
 }
 
-const cookie = new Cookies();
-
 /**
  * 父组件传递过来的postDetail因为异步请求的关系，所以可能为空
  */
 function Detail(props: any) {
 
     const {
-        detailShow, detailClose, postDetail, commentList, sendRequest,
+        detailShow, detailClose, postDetail, commentList, sendRequest, handleProfile,
         currentPage, totalLine, hasPreviousPage, hasNextPage, prePage, nextPage, pages, navigatePages
     } = props;
 
@@ -102,20 +103,19 @@ function Detail(props: any) {
             {/*顶栏*/}
             <Modal.Header>
                 <Modal.Title>
-                    <div className="d-flex justify-content-between align-items-center">
-                        <a href="" style={{marginRight: "0.5em"}}>
-                            <img src={postDetail && postDetail.user.headerUrl}
-                                 className="mr-4 rounded-circle user-header" alt="用户头像" height="30px"/>
-                        </a>
+                    <div className="d-flex justify-content-between align-items-center user-select-none">
+                        <img src={postDetail && postDetail.user.headerUrl}
+                             className="mr-4 rounded-circle user-header" alt="用户头像" height="30px"
+                             onClick={() => handleProfile(postDetail.user.id)}
+                             style={{marginRight: "0.5em", cursor: 'pointer'}}/>
                         <div className="align-items-center">
-                            <a href="">
-                            <span id="username" style={{marginRight: "0.5em"}}
-                                  className="text-muted">{postDetail && postDetail.user.username}</span>
-                                <small className="badge rounded-pill bg-success-subtle fw-medium"
-                                       style={{fontSize: "x-small"}}>
-                                    <i className="bi bi-1-circle"></i> 初出茅庐
-                                </small>
-                            </a>
+                           <span id="username" style={{marginRight: "0.5em", cursor: 'pointer'}}
+                                 onClick={() => handleProfile(postDetail.user.id)}
+                                 className="text-muted">{postDetail && postDetail.user.username}</span>
+                            <small className="badge rounded-pill bg-success-subtle fw-medium"
+                                   style={{fontSize: "x-small", cursor: 'pointer'}}>
+                                <i className="bi bi-1-circle"></i> 初出茅庐
+                            </small>
                         </div>
                     </div>
                 </Modal.Title>
@@ -139,7 +139,9 @@ function Detail(props: any) {
 
                 <Accordion>
                     <Comment commentList={commentList} currentPage={currentPage}
-                             refresh={refresh} discussPostId={postDetail && postDetail.post.id}/>
+                             refresh={refresh} discussPostId={postDetail && postDetail.post.id}
+                             handleProfile={handleProfile}
+                    />
                 </Accordion>
 
                 <Pagination sendRequest={sendRequestCurring}
@@ -188,7 +190,7 @@ function Detail(props: any) {
  */
 function Comment(props: any) {
 
-    const {commentList, currentPage, refresh, discussPostId} = props;
+    const {commentList, currentPage, refresh, discussPostId, handleProfile} = props;
     let floor = 1;
 
     return (
@@ -205,6 +207,7 @@ function Comment(props: any) {
                                      floor={(currentPage - 1) * 5 + floor++}
                                      refresh={refresh}
                                      discussPostId={discussPostId}
+                                     handleProfile={handleProfile}
                         />
                     )
                 })
@@ -219,7 +222,18 @@ function Comment(props: any) {
  */
 function CommentItem(props: any) {
 
-    const {user, comment, likeStatus, likeCount, replyCount, replyList, floor, refresh, discussPostId} = props;
+    const {
+        user,
+        comment,
+        likeStatus,
+        likeCount,
+        replyCount,
+        replyList,
+        floor,
+        refresh,
+        discussPostId,
+        handleProfile
+    } = props;
 
     /*
 
@@ -261,14 +275,17 @@ function CommentItem(props: any) {
     return (
         <ul className="list-unstyled mt-4">
             <li className="p-0 mb-3 row container">
-                <a href="profile.html" className="col-1">
+                <div className="col-1">
                     <img src={user.headerUrl}
                          className="align-self-start mr-4 rounded-circle user-header" height="35px"
+                         onClick={() => handleProfile(user.id)} style={{cursor: 'pointer'}}
                          alt="用户头像"/>
-                </a>
+                </div>
                 <div className="media-body col-11">
                     <div className="mt-0 d-flex justify-content-between">
-                        <span className="text-success" style={{fontSize: "small"}}>{user.username}</span>
+                        <span className="text-success"
+                              style={{fontSize: "small", userSelect: 'none', cursor: 'pointer'}}
+                              onClick={() => handleProfile(user.id)}>{user.username}</span>
                         <span className="badge badge-secondary float-right floor">{floor} #</span>
                     </div>
                     <div className="mt-2">
@@ -293,7 +310,7 @@ function CommentItem(props: any) {
                         </ul>
                     </div>
                     <Reply replyList={replyList} replyCount={replyCount} floor={floor} refresh={refresh}
-                           discussPostId={discussPostId} commentId={comment && comment.id}
+                           discussPostId={discussPostId} commentId={comment && comment.id} handleProfile={handleProfile}
                     />
                     {/*回复输入框*/}
                     <Accordion.Collapse eventKey={floor}>
@@ -321,7 +338,7 @@ function CommentItem(props: any) {
  */
 function Reply(props: any) {
 
-    const {replyList, replyCount, floor, refresh, discussPostId, commentId} = props;
+    const {replyList, replyCount, floor, refresh, discussPostId, commentId, handleProfile} = props;
     let replyFloor = 1;
 
     /**
@@ -347,6 +364,7 @@ function Reply(props: any) {
                                    refresh={refresh}
                                    discussPostId={discussPostId}
                                    commentId={commentId}
+                                   handleProfile={handleProfile}
                         />
                     )
                 })
@@ -360,7 +378,18 @@ function Reply(props: any) {
  */
 function ReplyItem(props: any) {
 
-    const {user, target, likeCount, likeStatus, reply, floorId, refresh, discussPostId, commentId} = props;
+    const {
+        user,
+        target,
+        likeCount,
+        likeStatus,
+        reply,
+        floorId,
+        refresh,
+        discussPostId,
+        commentId,
+        handleProfile
+    } = props;
 
     const [likeStatus2, setLikeStatus] = useState(likeStatus ? 'bi-hand-thumbs-up-fill' : 'bi-hand-thumbs-up');
     const [likeCount2, setLikeCount] = useState(likeCount);
@@ -398,7 +427,8 @@ function ReplyItem(props: any) {
     const fun = (obj: any) => {
         if (obj !== null) return (
             <>
-                回复 <b className="text-info">{target.username}</b>
+                &nbsp;回复&nbsp;<b className="text-info" style={{userSelect: 'none', cursor: 'pointer'}}
+                                   onClick={() => handleProfile(user.id)}>{target.username}</b>
             </>
         );
     }
@@ -407,7 +437,8 @@ function ReplyItem(props: any) {
         <li className="pt-3">
             <div>
                 <span>
-                    <b className="text-info">{user.username}</b>
+                    <b className="text-info" style={{userSelect: 'none', cursor: 'pointer'}}
+                       onClick={() => handleProfile(user.id)}>{user.username}</b>
                     {
                         fun(target)
                     }

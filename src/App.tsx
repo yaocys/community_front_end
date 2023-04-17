@@ -9,7 +9,7 @@ import Register from "./components/Main/Modal/Register";
 import {Cookies} from "react-cookie";
 import Publish from "./components/Main/Modal/Publish";
 import Detail from "./components/Main/Modal/Detail";
-import {Routes, Route, Navigate} from "react-router-dom";
+import {Routes, Route, Navigate, useNavigate} from "react-router-dom";
 import Message from "./components/Main/Message";
 import PersonalCenter from "./components/PersonalCenter";
 import Like from "./components/Main/Message/Like";
@@ -33,7 +33,7 @@ function App(props: any) {
 
     useEffect(() => {
         setTicket(cookie.get("ticket"));
-    }, [cookie]);
+    }, []);
 
     /*
     控制模态框的显示
@@ -53,6 +53,12 @@ function App(props: any) {
     const [prePage, setPrePage] = useState<number>(1);
     const [nextPage, setNextPage] = useState<number>(1);
     const [pages, setPages] = useState<number>(1);
+
+    const navigate = useNavigate();
+    const handleProfile = (userId: string) => {
+        detailClose();
+        navigate(`/user/${userId}`);
+    }
 
     const registerClose = () => {
         setRegisterShow(false);
@@ -158,7 +164,7 @@ function App(props: any) {
                 <Route path="/index" element={
                     <>
                         <Main ticket={ticket} detailOpen={detailOpen} ref={mainRef} publishOpen={publishOpen}
-                              registerOpen={registerOpen} loginOpen={loginOpen}/>
+                              registerOpen={registerOpen} loginOpen={loginOpen} handleProfile={handleProfile}/>
                         <Footer/>
                     </>
                 }/>
@@ -171,7 +177,7 @@ function App(props: any) {
                     <Route path="notice" element={<Notice/>}/>
                     <Route path="letter" element={<Letter/>}/>
                 </Route>
-                <Route path="/user" element={<PersonalCenter/>}/>
+                <Route path="/user/:userId" element={<PersonalCenter/>}/>
                 <Route path="/" element={<Navigate to="/index"/>}/>
             </Routes>
 
@@ -188,6 +194,8 @@ function App(props: any) {
                     postDetail={postDetail}
                     commentList={commentList}
                     sendRequest={sendRequest}
+                    handleProfile={handleProfile}
+
                     currentPage={currentPage}
                     totalLine={totalLine}
                     navigatePages={navigatePages}

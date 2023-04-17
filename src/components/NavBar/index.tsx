@@ -1,7 +1,7 @@
 import React, {useState} from "react";
 import './index.css';
 import axios from "../../util/axios";
-import {Cookies} from "react-cookie";
+import cookie from "../../util/utils";
 import {Button, Dropdown, Nav, NavDropdown, Form, InputGroup, Image} from "react-bootstrap";
 import {Link, NavLink, useNavigate} from "react-router-dom";
 
@@ -11,7 +11,6 @@ import {Link, NavLink, useNavigate} from "react-router-dom";
 function NavBar(props: any) {
 
     const {registerOpen, loginOpen, ticket, setTicket} = props;
-    const cookie = new Cookies();
 
     const [search, setSearch] = useState<string>("");
     const navigate = useNavigate();
@@ -28,7 +27,8 @@ function NavBar(props: any) {
                 cookie.remove('username');
                 cookie.remove('headerUrl');
                 alert("注销成功");
-                window.location.reload();
+                // 重新跳转到首页
+                navigate('/index');
             }
         )
     }
@@ -83,7 +83,7 @@ function NavBar(props: any) {
                                 账号设置
                             </NavDropdown.Item>
                             <NavDropdown.Item>
-                                <Link to="/user">
+                                <Link to={`/user/${cookie.get('userId')}`}>
                                     个人中心
                                 </Link>
                             </NavDropdown.Item>

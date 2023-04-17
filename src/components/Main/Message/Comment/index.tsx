@@ -38,8 +38,10 @@ const Comment: React.FC = () => {
                             <Card.Text>
                                 所以楼主的面试结果如何？
                             </Card.Text>
-                            <a href="" style={{marginRight: "3rem"}}>回复&nbsp;<i className="bi bi-chat-dots"/></a>
-                            <a href="">点赞&nbsp;<i className="bi bi-hand-thumbs-up"/></a>
+                            <div style={{}}>
+                                <i className="bi bi-chat-dots" style={{marginRight: '3rem'}}>&nbsp;回复</i>
+                                <i className="bi bi-hand-thumbs-up">&nbsp;点赞</i>
+                            </div>
                         </div>
                     </div>
                 </Card.Body>

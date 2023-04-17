@@ -1,8 +1,7 @@
 import React, {useState} from "react";
 import './index.css';
-import axios from "axios";
+import axios from "../../../../util/axios";
 import {Button, Form, Modal} from "react-bootstrap";
-import {Cookies} from "react-cookie";
 
 /**
  * 登录模态框组件
@@ -17,7 +16,8 @@ function Login(props: any) {
     const [rememberMe, setRememberMe] = useState<boolean>(false);
 
     const handleSubmit = () => {
-        axios.post('http://localhost:8079/community/login', {
+
+        axios.post('/login', {
             username: username,
             password: password,
             captcha: code,
@@ -25,19 +25,11 @@ function Login(props: any) {
         }, {
             headers: {
                 "Content-Type": 'application/x-www-form-urlencoded'
-            },
-            withCredentials: true
+            }
         }).then(
-            response => {
-                // 检查返回状态码
-                const code = response.data.code;
-                if (code === 200) {
-                    loginClose();
-                    window.location.reload();
-                }
-            },
-            error => {
-                console.log('请求失败', error);
+            (response) => {
+                loginClose();
+                window.location.reload();
             }
         )
     }

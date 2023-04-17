@@ -1,7 +1,7 @@
 import React, {useState} from "react";
-import {Button, Form, FormGroup, Modal, ModalTitle} from "react-bootstrap";
+import {Button, Form, Modal, ModalTitle} from "react-bootstrap";
 import './index.css';
-import axios from "axios";
+import axios from "../../../../util/axios";
 
 /**
  * 注册模态框组件
@@ -17,21 +17,17 @@ function Register(props: any) {
 
 
     const handleSubmit = () => {
-        axios.post('http://localhost:8079/community/register', {
+        axios.post('/register', {
             username: username,
             password: password,
             email: email
         }, {
             headers: {
                 "Content-Type": 'application/x-www-form-urlencoded'
-            },
-            withCredentials: true
+            }
         }).then(
-            response => {
-                console.log(response.data);
-            },
-            error => {
-                console.log('请求失败', error);
+            () => {
+                alert('注册成功，请于邮箱确认');
             }
         )
     }

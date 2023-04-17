@@ -1,10 +1,9 @@
-import React, {useEffect, useState, forwardRef, useImperativeHandle, RefObject} from "react";
-import {useRoutes, Routes, Route, Navigate} from "react-router-dom";
+import React, {useEffect, useState, forwardRef, useImperativeHandle} from "react";
 import './index.css';
 
 import PostList from "./PostList";
 import SideBar from "./SideBar";
-import axios from "axios";
+import axios from "../../util/axios";
 import Search from "./Search";
 import Message from "./Message";
 import PersonalCenter from "../PersonalCenter";
@@ -16,6 +15,7 @@ interface MainProps {
     publishOpen: () => void;
     registerOpen: () => void;
     loginOpen: () => void;
+    handleProfile: (userId: string) => void;
 }
 
 interface mainRef {
@@ -24,7 +24,7 @@ interface mainRef {
 
 const Main = forwardRef<mainRef, MainProps>((props, ref) => {
 
-    const {ticket, detailOpen, publishOpen, registerOpen, loginOpen} = props;
+    const {ticket, detailOpen, publishOpen, registerOpen, loginOpen, handleProfile} = props;
 
     const [postList, setPostList] = useState<any[]>([]);
     const [navigatePages, setNavigatePages] = useState<any[]>([]);
@@ -44,12 +44,11 @@ const Main = forwardRef<mainRef, MainProps>((props, ref) => {
      * 获取分页列表
      */
     const sendRequest = (offset: number) => {
-        axios.get('http://localhost:8079/community/index', {
+        axios.get('/index', {
             params: {
                 offset: offset,
                 limit: 10
-            },
-            withCredentials: true
+            }
         }).then(
             response => {
                 setPostList(response.data.data.list);
@@ -61,12 +60,8 @@ const Main = forwardRef<mainRef, MainProps>((props, ref) => {
                 setPrePage(response.data.data.prePage);
                 setNextPage(response.data.data.nextPage);
                 setPages(response.data.data.pages);
-            },
-            error => {
-                console.log('请求失败', error);
             }
         )
-        // window.scrollTo(0, 0);
     }
 
     useImperativeHandle(ref, () => ({
@@ -77,13 +72,12 @@ const Main = forwardRef<mainRef, MainProps>((props, ref) => {
      * 获取搜索结果列表
      */
     const search = (offset: number, keyword: string) => {
-        axios.get('http://localhost:8079/community/search', {
+        axios.get('/search', {
             params: {
                 keyword: keyword,
                 offset: offset,
                 limit: 10
-            },
-            withCredentials: true
+            }
         }).then(
             response => {
                 setPostList(response.data.data.list);
@@ -96,12 +90,8 @@ const Main = forwardRef<mainRef, MainProps>((props, ref) => {
                 setPrePage(response.data.data.prePage);
                 setNextPage(response.data.data.nextPage);
                 setPages(response.data.data.pages);
-            },
-            error => {
-                console.log('请求失败', error);
             }
         )
-        // window.scrollTo(0, 0);
     }
 
     return (
@@ -111,6 +101,7 @@ const Main = forwardRef<mainRef, MainProps>((props, ref) => {
                           postList={postList}
                           sendRequest={sendRequest}
                           publishOpen={publishOpen}
+                          handleProfile={handleProfile}
 
                           currentPage={currentPage}
                           totalLine={totalLine}
@@ -121,7 +112,8 @@ const Main = forwardRef<mainRef, MainProps>((props, ref) => {
                           nextPage={nextPage}
                           pages={pages}
                 />
-                <SideBar ticket={ticket} registerOpen={registerOpen} loginOpen={loginOpen}/>
+                <SideBar ticket={ticket} registerOpen={registerOpen} loginOpen={loginOpen}
+                         handleProfile={handleProfile}/>
             </>
 
             {/*            <Route path="/search" element={
